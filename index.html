@@ -67,24 +67,57 @@
   </nav>
 
   <main id="main">
-    <!-- Hero Section -->
-    <section class="hero">
+    <!-- Modern Split-Hero Section -->
+    <section class="hero hero--split">
       <div class="container">
-        <div class="hero__card" style="background-image: url('https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=1600&q=80');">
-          <div class="hero__content">
-            <span class="eyebrow">Cairo's Artisan Coffee Roasters</span>
-            <h1>Exceptional Coffee, Roasted with Intention.</h1>
-            <p>From micro-lot farms in Huila and Yirgacheffe straight to your cup. Freshly roasted weekly in Cairo with complete farm traceability.</p>
-            <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+        <div class="hero__grid">
+          <div class="hero__content-box">
+            <div class="eyebrow">
+              <span class="eyebrow__dot"></span> Cairo’s Specialty Micro-Roastery
+            </div>
+            <h1>Artisan Coffee, Roasted with Intention.</h1>
+            <p>Direct farm-trade beans from Huila and Yirgacheffe, roasted in small batches every 48 hours for peak sweetness, clarity, and floral aromatics.</p>
+            
+            <div class="hero__actions">
               <a href="products.html" class="btn btn--primary">Explore All Roasts</a>
               <a href="articles.html" class="btn btn--ghost">Brewing Guides</a>
+            </div>
+
+            <div class="hero__stats">
+              <div class="stat">
+                <strong>86+</strong>
+                <span>Specialty Grade</span>
+              </div>
+              <div class="stat__divider"></div>
+              <div class="stat">
+                <strong>48h</strong>
+                <span>Roast Freshness</span>
+              </div>
+              <div class="stat__divider"></div>
+              <div class="stat">
+                <strong>100%</strong>
+                <span>Arabica Traceable</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="hero__visual">
+            <div class="hero__img-frame">
+              <img src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=1200&q=80" alt="Freshly Roasted Specialty Coffee Beans">
+              <div class="hero__float-badge">
+                <span class="badge-icon">☕</span>
+                <div>
+                  <h4>Batch #104 Active</h4>
+                  <small>Dispatched weekly across Cairo</small>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Signature Roasts (Featured Grid) -->
+    <!-- Signature Roasts -->
     <section class="section">
       <div class="container">
         <div class="section__head">
@@ -175,7 +208,7 @@
       </div>
     </section>
 
-    <!-- Value Propositions / Benefits -->
+    <!-- Value Propositions -->
     <section class="section section--alt">
       <div class="container">
         <div class="benefits">
@@ -204,7 +237,7 @@
       </div>
     </section>
 
-    <!-- Articles / Knowledge Section -->
+    <!-- Brew Guides -->
     <section class="section">
       <div class="container">
         <div class="section__head">
@@ -214,11 +247,54 @@
           </div>
           <a href="articles.html" class="btn btn--ghost btn--sm">All Guides</a>
         </div>
-        <div class="grid grid--3" id="articlesGrid"></div>
+        <div class="grid grid--3" id="articlesGrid">
+          <!-- Guide 1 -->
+          <article class="article-card">
+            <a href="article.html?id=1" class="article-card__media">
+              <img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=800&q=75" alt="How to Grind Coffee" loading="lazy">
+            </a>
+            <div class="article-card__body">
+              <span class="badge">4 min read</span>
+              <h3><a href="article.html?id=1">How to Grind Coffee for V60, Espresso, and French Press</a></h3>
+              <p>Grind size determines whether your coffee tastes sweet and balanced or bitter and sour.</p>
+              <div class="card-actions">
+                <a href="article.html?id=1" class="btn btn--ghost btn--sm">Read Guide</a>
+              </div>
+            </div>
+          </article>
+          <!-- Guide 2 -->
+          <article class="article-card">
+            <a href="article.html?id=2" class="article-card__media">
+              <img src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=800&q=75" alt="Freshly Roasted Coffee" loading="lazy">
+            </a>
+            <div class="article-card__body">
+              <span class="badge">5 min read</span>
+              <h3><a href="article.html?id=2">Why Freshly Roasted Coffee Changes Everything</a></h3>
+              <p>Supermarket coffee sits on shelves for months losing aroma. Here is why freshness matters.</p>
+              <div class="card-actions">
+                <a href="article.html?id=2" class="btn btn--ghost btn--sm">Read Guide</a>
+              </div>
+            </div>
+          </article>
+          <!-- Guide 3 -->
+          <article class="article-card">
+            <a href="article.html?id=3" class="article-card__media">
+              <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=800&q=75" alt="Flavor Notes" loading="lazy">
+            </a>
+            <div class="article-card__body">
+              <span class="badge">4 min read</span>
+              <h3><a href="article.html?id=3">Understanding Coffee Flavor Notes: It's Not Artificial</a></h3>
+              <p>When we say 'Jasmine and Peach', discover how altitude and processing create real flavor.</p>
+              <div class="card-actions">
+                <a href="article.html?id=3" class="btn btn--ghost btn--sm">Read Guide</a>
+              </div>
+            </div>
+          </article>
+        </div>
       </div>
     </section>
 
-    <!-- Customer Reviews -->
+    <!-- Reviews -->
     <section class="section section--alt">
       <div class="container">
         <div class="section__head">
@@ -227,7 +303,41 @@
             <p class="muted">What fellow brewers in Cairo say about our beans.</p>
           </div>
         </div>
-        <div class="grid grid--3" id="reviewsGrid"></div>
+        <div class="grid grid--3" id="reviewsGrid">
+          <article class="review-card">
+            <div class="stars">★★★★★</div>
+            <p>"The Colombia Huila blew me away on my morning V60. Clean, bright, and genuinely freshly roasted."</p>
+            <footer>
+              <div class="avatar">O</div>
+              <div>
+                <strong>Omar K.</strong>
+                <span class="muted">Zamalek, Cairo</span>
+              </div>
+            </footer>
+          </article>
+          <article class="review-card">
+            <div class="stars">★★★★★</div>
+            <p>"Roastoria's Brazil Cerrado makes the thickest espresso crema with silky milk notes. Super fast delivery!"</p>
+            <footer>
+              <div class="avatar">N</div>
+              <div>
+                <strong>Nouran E.</strong>
+                <span class="muted">New Cairo</span>
+              </div>
+            </footer>
+          </article>
+          <article class="review-card">
+            <div class="stars">★★★★★</div>
+            <p>"Packaging is airtight and beautiful. The tasting notes are actually accurate and not just marketing words."</p>
+            <footer>
+              <div class="avatar">T</div>
+              <div>
+                <strong>Tarek H.</strong>
+                <span class="muted">Maadi, Cairo</span>
+              </div>
+            </footer>
+          </article>
+        </div>
       </div>
     </section>
   </main>
@@ -282,7 +392,6 @@
             <li>Cairo, Egypt</li>
             <li>Phone: +20254878787</li>
             <li>Email: hello@roastoria-coffee.com</li>
-            <li>Fresh roasts dispatched daily</li>
           </ul>
         </div>
       </div>
@@ -294,7 +403,6 @@
   </footer>
 
   <!-- Scripts -->
-  <script src="js/data.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>
