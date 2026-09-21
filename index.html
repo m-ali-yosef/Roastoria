@@ -67,51 +67,57 @@
   </nav>
 
   <main id="main">
-    <!-- Modern Split-Hero Section -->
-    <section class="hero hero--split">
+    <!-- Dynamic Animated Hero Slider -->
+    <section class="hero">
       <div class="container">
-        <div class="hero__grid">
-          <div class="hero__content-box">
-            <div class="eyebrow">
-              <span class="eyebrow__dot"></span> Cairo’s Specialty Micro-Roastery
-            </div>
-            <h1>Artisan Coffee, Roasted with Intention.</h1>
-            <p>Direct farm-trade beans from Huila and Yirgacheffe, roasted in small batches every 48 hours for peak sweetness, clarity, and floral aromatics.</p>
-            
-            <div class="hero__actions">
-              <a href="products.html" class="btn btn--primary">Explore All Roasts</a>
-              <a href="articles.html" class="btn btn--ghost">Brewing Guides</a>
-            </div>
-
-            <div class="hero__stats">
-              <div class="stat">
-                <strong>86+</strong>
-                <span>Specialty Grade</span>
-              </div>
-              <div class="stat__divider"></div>
-              <div class="stat">
-                <strong>48h</strong>
-                <span>Roast Freshness</span>
-              </div>
-              <div class="stat__divider"></div>
-              <div class="stat">
-                <strong>100%</strong>
-                <span>Arabica Traceable</span>
+        <div class="hero__slider" id="heroSlider" aria-roledescription="carousel" aria-label="Featured Highlights">
+          <!-- Slide 1 -->
+          <div class="hero__slide is-active" style="background-image: url('https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=1600&q=80');">
+            <div class="hero__content">
+              <span class="eyebrow">Cairo's Artisan Coffee Roasters</span>
+              <h1>Exceptional Coffee, Roasted with Intention.</h1>
+              <p>From micro-lot farms in Huila and Yirgacheffe straight to your cup. Freshly roasted weekly in Cairo with complete farm traceability.</p>
+              <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                <a href="products.html" class="btn btn--primary">Explore All Roasts</a>
+                <a href="articles.html" class="btn btn--ghost">Brewing Guides</a>
               </div>
             </div>
           </div>
 
-          <div class="hero__visual">
-            <div class="hero__img-frame">
-              <img src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=1200&q=80" alt="Freshly Roasted Specialty Coffee Beans">
-              <div class="hero__float-badge">
-                <span class="badge-icon">☕</span>
-                <div>
-                  <h4>Batch #104 Active</h4>
-                  <small>Dispatched weekly across Cairo</small>
-                </div>
+          <!-- Slide 2 -->
+          <div class="hero__slide" style="background-image: url('https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=1600&q=80');">
+            <div class="hero__content">
+              <span class="eyebrow">Peak Extraction & Precision</span>
+              <h1>Master Your Daily Pour-Over Ritual.</h1>
+              <p>Explore single-origins dialed for V60, Chemex, and Aeropress. Clean cup profiles bursting with floral jasmine and crisp stone fruit.</p>
+              <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                <a href="products.html?filter=drip" class="btn btn--primary">Shop Drip & V60</a>
+                <a href="articles.html" class="btn btn--ghost">Brew Recipes</a>
               </div>
             </div>
+          </div>
+
+          <!-- Slide 3 -->
+          <div class="hero__slide" style="background-image: url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=1600&q=80');">
+            <div class="hero__content">
+              <span class="eyebrow">Tasting Flights & Bundles</span>
+              <h1>The Discovery Box: Three Origins, One Journey.</h1>
+              <p>Taste the contrast between washed Colombian sweetness, Ethiopian floral notes, and Brazilian nutty chocolate body.</p>
+              <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                <a href="product.html?id=4" class="btn btn--primary">Get Discovery Trio</a>
+                <a href="products.html" class="btn btn--ghost">All Bundles</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Navigation Controls -->
+          <button type="button" class="slider-arrow slider-arrow--prev" id="slidePrev" aria-label="Previous slide">‹</button>
+          <button type="button" class="slider-arrow slider-arrow--next" id="slideNext" aria-label="Next slide">›</button>
+
+          <div class="slider-dots" id="sliderDots" role="tablist" aria-label="Slider navigation">
+            <button type="button" class="slider-dot is-active" data-slide="0" aria-label="Go to slide 1"></button>
+            <button type="button" class="slider-dot" data-slide="1" aria-label="Go to slide 2"></button>
+            <button type="button" class="slider-dot" data-slide="2" aria-label="Go to slide 3"></button>
           </div>
         </div>
       </div>
@@ -248,7 +254,6 @@
           <a href="articles.html" class="btn btn--ghost btn--sm">All Guides</a>
         </div>
         <div class="grid grid--3" id="articlesGrid">
-          <!-- Guide 1 -->
           <article class="article-card">
             <a href="article.html?id=1" class="article-card__media">
               <img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=800&q=75" alt="How to Grind Coffee" loading="lazy">
@@ -262,7 +267,6 @@
               </div>
             </div>
           </article>
-          <!-- Guide 2 -->
           <article class="article-card">
             <a href="article.html?id=2" class="article-card__media">
               <img src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=800&q=75" alt="Freshly Roasted Coffee" loading="lazy">
@@ -276,7 +280,6 @@
               </div>
             </div>
           </article>
-          <!-- Guide 3 -->
           <article class="article-card">
             <a href="article.html?id=3" class="article-card__media">
               <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=800&q=75" alt="Flavor Notes" loading="lazy">
@@ -294,7 +297,7 @@
       </div>
     </section>
 
-    <!-- Reviews -->
+    <!-- Community Reviews -->
     <section class="section section--alt">
       <div class="container">
         <div class="section__head">
@@ -381,7 +384,7 @@
           <ul>
             <li><a href="index.html">Home</a></li>
             <li><a href="products.html">All Roasts & Flights</a></li>
-            <li><a href="articles.html">Brewing Guides</a></li>
+            <li><a href="articles.html">Brew Guides</a></li>
             <li><a href="about.html">Roastery & Contact</a></li>
           </ul>
         </div>
