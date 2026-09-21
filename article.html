@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brew Guide — Roastoria Specialty Coffee</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header__inner">
+      <a href="index.html" class="logo" aria-label="Roastoria Home">
+        <div class="logo__mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+            <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+            <line x1="6" y1="1" x2="6" y2="4"></line>
+            <line x1="10" y1="1" x2="10" y2="4"></line>
+            <line x1="14" y1="1" x2="14" y2="4"></line>
+          </svg>
+        </div>
+        <div>Roastoria <span>Artisan Roasters</span></div>
+      </a>
+
+      <nav class="nav" aria-label="Main Navigation">
+        <a href="index.html">Home</a>
+        <a href="products.html">Our Roasts</a>
+        <a href="articles.html" class="is-active">Brew Guides</a>
+        <a href="about.html">About & Contact</a>
+      </nav>
+
+      <div class="header__actions">
+        <button type="button" class="icon-btn" data-cart-toggle aria-label="Open cart">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="9" cy="21" r="1"></circle>
+            <circle cx="20" cy="21" r="1"></circle>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+          </svg>
+          <span class="cart-count" aria-label="Cart items count" style="display:none;">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="section">
+    <div class="container" id="articleDetailContainer">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="index.html">Home</a> &gt; <a href="articles.html">Brew Guides</a> &gt; <span id="artTitleBreadcrumb">Brew Guide</span>
+      </nav>
+      <article class="article">
+        <span class="badge" id="artBadge">Specialty Coffee Guide</span>
+        <h1 id="artTitle">Understanding Specialty Coffee Flavor Notes</h1>
+        <div class="article-cover">
+          <img id="artImage" src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=1200&q=80" alt="Brew Guide">
+        </div>
+        <div class="article-body" id="artBody">
+          <p>When we say coffee has notes of 'Bergamot, Red Apple, or Dark Chocolate', we never add synthetic syrup or flavor drops. These natural profiles develop through terroir, elevation, cherry fermentation, and micro-batch roasting precision.</p>
+          <p>Brewing extraordinary coffee at home requires balancing water temperature (92°C–96°C), brew ratio (1:15 to 1:16), and grind particle uniformity to ensure sweet, aromatic extraction.</p>
+        </div>
+      </article>
+    </div>
+  </main>
+
+  <!-- Cart Drawer -->
+  <div class="drawer-overlay" id="drawerOverlay"></div>
+  <aside class="cart-drawer" id="cartDrawer" aria-label="Shopping Cart" aria-hidden="true">
+    <div class="cart-drawer__head">
+      <h3>Your Coffee Box</h3>
+      <button type="button" class="icon-btn" id="closeCart">✕</button>
+    </div>
+    <div class="cart-drawer__list" id="cartList"></div>
+    <div class="cart-drawer__foot" id="cartFoot" style="display:none;">
+      <div class="cart-total">
+        <span>Subtotal</span>
+        <span id="cartTotal">0 EGP</span>
+      </div>
+      <button type="button" class="btn btn--primary" id="checkoutBtn">Proceed to Checkout</button>
+    </div>
+  </aside>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__copy">
+        <p>© 2026 Roastoria Coffee Roasters. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script>
+    // تفعيل فوري يقرأ المعرف من الرابط
+    (function(){
+      const articlesData = {
+        1: {
+          title: "How to Grind Coffee for V60, Espresso, and French Press",
+          badge: "4 min read",
+          img: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=1200&q=80",
+          text: "Grind size determines whether your coffee tastes sweet and balanced or bitter and sour. Fine grind extracts fast for espresso, while medium-fine suits V60 pour-overs."
+        },
+        2: {
+          title: "Why Freshly Roasted Coffee Changes Everything",
+          badge: "5 min read",
+          img: "https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=1200&q=80",
+          text: "Supermarket beans sit on shelves for months losing aromatic oils. Our 48-hour roast rule guarantees vibrant acidity and full floral bouquet."
+        },
+        3: {
+          title: "Understanding Coffee Flavor Notes: It's Not Syrup",
+          badge: "4 min read",
+          img: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=1200&q=80",
+          text: "When we say 'Bergamot and Peach', we didn't add syrup. Discover how soil composition, altitude, and washed processing create real flavor."
+        }
+      };
+      const id = new URLSearchParams(window.location.search).get("id") || "1";
+      const a = articlesData[id] || articlesData[1];
+      document.getElementById("artTitle").textContent = a.title;
+      document.getElementById("artTitleBreadcrumb").textContent = a.title;
+      document.getElementById("artBadge").textContent = a.badge;
+      document.getElementById("artImage").src = a.img;
+      document.getElementById("artBody").children[0].textContent = a.text;
+    })();
+  </script>
+</body>
+</html>
