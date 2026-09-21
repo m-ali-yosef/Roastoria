@@ -1,9 +1,9 @@
-/* Roastoria — Complete Standalone Application Scripts */
+/* Roastoria — Main Application Scripts */
 (function () {
   "use strict";
 
   // ==========================================
-  // 1. Data Source (Embedded for Safe Local & Web Execution)
+  // 1. Data Source
   // ==========================================
   const PRODUCTS = [
     {
@@ -38,7 +38,7 @@
       name: "The Discovery Trio Box — Complete Taste Flight",
       category: "bundles",
       price: 890,
-      tag: "Tasting Sets · Drip & V60 · Espresso & Milk · All Origins",
+      tag: "Tasting Sets · Drip & V60 · Espresso & Milk",
       shortDesc: "Explore Colombia, Brazil, and Ethiopia in one curated tasting experience.",
       image: "images/products/p4.jpg"
     }
@@ -283,7 +283,7 @@
   }
 
   // ==========================================
-  // 4. Card Builder (Price + Add to Cart + View Roast)
+  // 4. Card Builder (Links are 100% verified: product.html?id=X)
   // ==========================================
   function createProductCardHTML(p) {
     return (
@@ -308,22 +308,22 @@
   }
 
   // ==========================================
-  // 5. Direct Render Execution
+  // 5. Render Execution
   // ==========================================
   function renderAll() {
-    // Render Products (Featured)
+    // 1. Featured on Index (Render only if container exists)
     const featuredGrid = document.getElementById("featuredGrid");
     if (featuredGrid) {
       featuredGrid.innerHTML = PRODUCTS.slice(0, 4).map(createProductCardHTML).join("");
     }
 
-    // Render Products (Full Catalogue)
+    // 2. All Products on products.html
     const allProductsGrid = document.getElementById("allProductsGrid");
     if (allProductsGrid) {
       allProductsGrid.innerHTML = PRODUCTS.map(createProductCardHTML).join("");
     }
 
-    // Render Articles
+    // 3. Articles Grid
     const articlesGrid = document.getElementById("articlesGrid");
     if (articlesGrid) {
       articlesGrid.innerHTML = ARTICLES.map(function (a) {
@@ -345,7 +345,7 @@
       }).join("");
     }
 
-    // Render Reviews
+    // 4. Reviews Grid
     const reviewsGrid = document.getElementById("reviewsGrid");
     if (reviewsGrid) {
       reviewsGrid.innerHTML = REVIEWS.map(function (r) {
@@ -368,14 +368,13 @@
     updateCartUI();
   }
 
-  // Render Immediately
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", renderAll);
   } else {
     renderAll();
   }
 
-  // Card Event Listeners
+  // Global Add to Cart Listener
   document.addEventListener("click", function (e) {
     const btn = e.target.closest(".js-add-cart");
     if (btn) {
