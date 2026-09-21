@@ -1,21 +1,25 @@
 /* Roastoria — Specialty Coffee Roasters Design System */
+/* Nordic Clean Roast & Sharp Modern Floating Cards */
 :root {
-  --bg: #FDFBF7;         /* Warm Milk Cream */
-  --bg-alt: #F4EFE6;     /* Sand Oat */
+  --bg: #F4F6F4;
+  --bg-alt: #E8EDE8;
   --surface: #FFFFFF;
-  --teal: #B3541E;       /* Roasted Amber / Terracotta */
-  --teal-dark: #87360A;  /* Deep Roast Hover */
-  --teal-soft: #F4E8DF;  /* Soft Warm Accent */
-  --gold: #D49B42;       /* Honey / Caramel */
-  --ink: #231610;        /* Espresso Dark - Text */
-  --ink-soft: #6E5F57;   /* Muted Coffee Brown */
-  --line: #E8DED1;
-  --shadow: 0 10px 32px rgba(35, 22, 16, 0.08);
-  --shadow-sm: 0 4px 16px rgba(35, 22, 16, 0.05);
-  --radius: 1.25rem;
-  --radius-sm: 0.85rem;
+  --teal: #1F3F34;
+  --teal-dark: #142B23;
+  --teal-soft: #DDE7E1;
+  --gold: #C28B47;
+  --ink: #161A18;
+  --ink-soft: #5C6660;
+  --line: #D8E2DC;
+  
+  --radius: 0.55rem;
+  --radius-sm: 0.35rem;
+  
+  --shadow-sm: 0 4px 18px rgba(22, 26, 24, 0.05);
+  --shadow: 0 16px 36px rgba(22, 26, 24, 0.10);
+  
   --header: 4.25rem;
-  --max: 72rem;
+  --max: 76rem;
   --font: "Nunito", system-ui, sans-serif;
   --font-heading: "Poppins", system-ui, sans-serif;
 }
@@ -78,7 +82,7 @@ ul {
   background: var(--teal);
   color: #fff;
   padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
+  border-radius: var(--radius-sm);
 }
 
 .skip-link:focus {
@@ -86,7 +90,7 @@ ul {
 }
 
 .container {
-  width: min(100% - 2rem, var(--max));
+  width: min(100% - 2.5rem, var(--max));
   margin-inline: auto;
 }
 
@@ -98,7 +102,7 @@ ul {
   height: var(--header);
   display: flex;
   align-items: center;
-  background: rgba(253, 251, 247, 0.94);
+  background: rgba(244, 246, 244, 0.95);
   backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--line);
 }
@@ -108,7 +112,7 @@ ul {
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
-  width: min(100% - 2rem, var(--max));
+  width: min(100% - 2.5rem, var(--max));
   margin-inline: auto;
 }
 
@@ -125,7 +129,7 @@ ul {
 .logo__mark {
   width: 2.15rem;
   height: 2.15rem;
-  border-radius: 0.7rem;
+  border-radius: var(--radius-sm);
   background: var(--teal);
   display: grid;
   place-items: center;
@@ -165,7 +169,7 @@ svg {
 
 .nav a:hover,
 .nav a.is-active {
-  color: var(--teal-dark);
+  color: var(--teal);
 }
 
 .nav a.is-active::after {
@@ -188,7 +192,7 @@ svg {
 .icon-btn {
   width: 2.6rem;
   height: 2.6rem;
-  border-radius: 50%;
+  border-radius: var(--radius-sm);
   display: grid;
   place-items: center;
   color: var(--ink);
@@ -224,7 +228,7 @@ svg {
 .drawer-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(35, 22, 16, 0.45);
+  background: rgba(22, 26, 24, 0.45);
   opacity: 0;
   visibility: hidden;
   transition: 0.25s;
@@ -268,7 +272,7 @@ svg {
 .mobile-nav a.is-active,
 .mobile-nav a:hover {
   background: var(--bg-alt);
-  color: var(--teal-dark);
+  color: var(--teal);
 }
 
 /* ===== Buttons ===== */
@@ -279,9 +283,9 @@ svg {
   gap: 0.4rem;
   min-height: 2.85rem;
   padding: 0.55rem 1.35rem;
-  border-radius: 999px;
+  border-radius: var(--radius-sm);
   font-weight: 700;
-  transition: 0.2s ease;
+  transition: all 0.25s ease;
   text-align: center;
 }
 
@@ -292,7 +296,8 @@ svg {
 
 .btn--primary:hover {
   background: var(--teal-dark);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(31, 63, 52, 0.25);
 }
 
 .btn--ghost {
@@ -304,13 +309,13 @@ svg {
 .btn--ghost:hover {
   border-color: var(--teal);
   background: var(--bg-alt);
-  color: var(--teal-dark);
+  color: var(--teal);
 }
 
 .btn--sm {
-  min-height: 2.4rem;
-  padding: 0.4rem 0.95rem;
-  font-size: 0.88rem;
+  min-height: 2.35rem;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.84rem;
 }
 
 /* ===== Hero ===== */
@@ -321,11 +326,12 @@ svg {
 .hero__card {
   position: relative;
   overflow: hidden;
-  border-radius: 1.5rem;
+  border-radius: var(--radius);
   min-height: 28rem;
   display: grid;
   align-items: end;
   background: var(--ink) center / cover no-repeat;
+  box-shadow: var(--shadow);
 }
 
 .hero__card::after {
@@ -334,9 +340,9 @@ svg {
   inset: 0;
   background: linear-gradient(
     to top,
-    rgba(35, 22, 16, 0.88) 10%,
-    rgba(35, 22, 16, 0.4) 60%,
-    rgba(35, 22, 16, 0.1)
+    rgba(22, 26, 24, 0.94) 15%,
+    rgba(22, 26, 24, 0.50) 60%,
+    rgba(22, 26, 24, 0.20)
   );
 }
 
@@ -351,11 +357,11 @@ svg {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  background: rgba(212, 155, 66, 0.25);
+  background: rgba(194, 139, 71, 0.2);
   border: 1px solid var(--gold);
-  color: var(--gold);
+  color: #E8BF7F;
   padding: 0.3rem 0.85rem;
-  border-radius: 999px;
+  border-radius: var(--radius-sm);
   font-size: 0.82rem;
   font-weight: 700;
   margin-bottom: 0.85rem;
@@ -369,7 +375,7 @@ svg {
 }
 
 .hero p {
-  color: rgba(253, 251, 247, 0.92);
+  color: rgba(244, 246, 244, 0.92);
   margin-bottom: 1.35rem;
   max-width: 34rem;
   font-size: 1.05rem;
@@ -415,105 +421,149 @@ svg {
   margin-top: 0.4rem;
 }
 
-/* ===== Cards / Grids ===== */
+/* ===== Grid & Cards ===== */
 .grid {
   display: grid;
-  gap: 1rem;
+  gap: 1.25rem;
 }
 
 .grid--2, .grid--3, .grid--4 {
   grid-template-columns: 1fr;
 }
 
-.product-card, .article-card, .review-card, .info-card, .form-card {
+.product-card, 
+.article-card, 
+.review-card, 
+.info-card, 
+.form-card {
   background: var(--surface);
-  border: 1px solid var(--line);
+  border: 1px solid rgba(216, 226, 220, 0.8);
   border-radius: var(--radius);
   box-shadow: var(--shadow-sm);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), 
+              box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.35s ease;
   overflow: hidden;
+}
+
+.product-card:hover, 
+.article-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow);
+  border-color: var(--teal);
 }
 
 .product-card {
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 
 .product-card__media {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: relative;
   aspect-ratio: 1 / 1;
-  background: var(--bg-alt);
+  background: #FAFCFA;
+  border-bottom: 1px solid var(--line);
   overflow: hidden;
-  flex-shrink: 0;
+  padding: 1.5rem;
+}
+
+.product-card__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.product-card:hover .product-card__media img {
+  transform: scale(1.08);
 }
 
 .article-card__media {
   display: block;
   position: relative;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 16 / 10;
   background: var(--bg-alt);
   overflow: hidden;
+  border-bottom: 1px solid var(--line);
 }
 
-.product-card__media img, .article-card__media img {
+.article-card__media img {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.45s ease;
+  transition: transform 0.4s ease;
 }
 
-.product-card:hover img, .article-card:hover img {
+.article-card:hover img {
   transform: scale(1.05);
 }
 
-.product-card__body, .article-card__body, .review-card, .info-card, .form-card {
-  padding: 1rem 1.1rem 1.15rem;
+.product-card__body, 
+.article-card__body, 
+.review-card, 
+.info-card, 
+.form-card {
+  padding: 1.25rem;
 }
 
 .product-card__body {
   display: flex;
   flex-direction: column;
-  flex: 1;
-}
-
-.product-card__body p {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  margin-bottom: 0.5rem;
+  flex-grow: 1;
 }
 
 .badge {
   display: inline-block;
   background: var(--bg-alt);
-  color: var(--teal-dark);
-  font-size: 0.75rem;
-  font-weight: 700;
-  padding: 0.2rem 0.6rem;
-  border-radius: 999px;
-  margin-bottom: 0.5rem;
+  color: var(--teal);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-weight: 800;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-sm);
+  margin-bottom: 0.6rem;
+  align-self: flex-start;
 }
 
 .product-card h3, .article-card h3 {
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   font-weight: 700;
   line-height: 1.35;
-  margin-bottom: 0.35rem;
+  margin-bottom: 0.4rem;
+  min-height: 2.7rem;
 }
 
 .product-card p, .article-card p {
   color: var(--ink-soft);
-  font-size: 0.92rem;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
   margin-bottom: 0.75rem;
+  min-height: 2.6rem;
+}
+
+/* السعر في الكارت */
+.product-card__price {
+  margin-bottom: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
 }
 
 .price {
   font-weight: 800;
-  color: var(--teal-dark);
-  font-size: 1.15rem;
+  color: var(--teal);
+  font-size: 1.2rem;
   font-family: var(--font-heading);
 }
 
@@ -523,19 +573,24 @@ svg {
   color: var(--ink-soft);
 }
 
+/* تنسيق الزرين (Add to Cart + View Roast) */
 .card-actions {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 0.45rem;
   margin-top: auto;
-  padding-top: 0.8rem;
-}
-
-.card-actions .btn {
   width: 100%;
 }
 
-/* ===== Article Page (Clean Natural Flow) ===== */
+.card-actions--dual {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 0.5rem;
+}
+
+.card-actions--dual .btn {
+  width: 100%;
+  white-space: nowrap;
+}
+
+/* ===== Article Page ===== */
 .article-cover {
   width: 100%;
   border-radius: var(--radius);
@@ -585,12 +640,13 @@ svg {
 
 .filter-btn {
   padding: 0.45rem 1rem;
-  border-radius: 999px;
+  border-radius: var(--radius-sm);
   border: 1px solid var(--line);
   background: #fff;
   color: var(--ink-soft);
   font-weight: 700;
   font-size: 0.88rem;
+  transition: all 0.2s ease;
 }
 
 .filter-btn.is-active, .filter-btn:hover {
@@ -636,11 +692,11 @@ svg {
 .avatar {
   width: 2.5rem;
   height: 2.5rem;
-  border-radius: 50%;
+  border-radius: var(--radius-sm);
   display: grid;
   place-items: center;
   background: var(--bg-alt);
-  color: var(--teal-dark);
+  color: var(--teal);
   font-weight: 800;
 }
 
@@ -659,18 +715,19 @@ svg {
   display: flex;
   gap: 0.85rem;
   align-items: flex-start;
-  padding: 1.1rem;
+  padding: 1.25rem;
   background: #fff;
   border: 1px solid var(--line);
   border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
 }
 
 .benefit__icon {
   width: 2.6rem;
   height: 2.6rem;
-  border-radius: 0.8rem;
+  border-radius: var(--radius-sm);
   background: var(--bg-alt);
-  color: var(--teal-dark);
+  color: var(--teal);
   display: grid;
   place-items: center;
   flex-shrink: 0;
@@ -699,6 +756,7 @@ svg {
   overflow: hidden;
   min-height: 14rem;
   background: var(--bg-alt);
+  border: 1px solid var(--line);
 }
 
 .about-hero__media img {
@@ -719,7 +777,7 @@ svg {
   background: #fff;
   border: 1px solid var(--line);
   padding: 0.35rem 0.8rem;
-  border-radius: 999px;
+  border-radius: var(--radius-sm);
   font-size: 0.88rem;
   font-weight: 700;
 }
@@ -736,7 +794,7 @@ svg {
   align-items: center;
   gap: 0.45rem;
   padding: 0.55rem 1rem;
-  border-radius: 999px;
+  border-radius: var(--radius-sm);
   background: #fff;
   border: 1px solid var(--line);
   font-weight: 700;
@@ -744,7 +802,7 @@ svg {
 
 .social-btn:hover {
   border-color: var(--teal);
-  color: var(--teal-dark);
+  color: var(--teal);
   background: var(--bg-alt);
 }
 
@@ -765,7 +823,7 @@ svg {
   width: 100%;
   border: 1px solid var(--line);
   background: #fff;
-  border-radius: 0.85rem;
+  border-radius: var(--radius-sm);
   padding: 0.75rem 0.95rem;
   color: var(--ink);
   outline: none;
@@ -773,7 +831,7 @@ svg {
 
 .field input:focus, .field textarea:focus {
   border-color: var(--teal);
-  box-shadow: 0 0 0 3px rgba(179, 84, 30, 0.2);
+  box-shadow: 0 0 0 3px rgba(31, 63, 52, 0.15);
 }
 
 .field textarea {
@@ -789,7 +847,7 @@ svg {
 .form-success {
   display: none;
   background: var(--bg-alt);
-  color: var(--teal-dark);
+  color: var(--teal);
   border-radius: var(--radius-sm);
   padding: 0.85rem 1rem;
   font-weight: 700;
@@ -816,10 +874,10 @@ svg {
 
 /* ===== Footer ===== */
 .footer {
-  margin-top: 2rem;
+  margin-top: 3rem;
   background: var(--ink);
   color: var(--bg);
-  padding: 2.5rem 0 1.2rem;
+  padding: 3rem 0 1.5rem;
 }
 
 .footer a {
@@ -842,7 +900,7 @@ svg {
 }
 
 .footer p, .footer li {
-  color: rgba(253, 251, 247, 0.8);
+  color: rgba(244, 246, 244, 0.8);
   font-size: 0.92rem;
 }
 
@@ -859,7 +917,7 @@ svg {
 .footer__social a {
   width: 2.4rem;
   height: 2.4rem;
-  border-radius: 50%;
+  border-radius: var(--radius-sm);
   display: grid;
   place-items: center;
   background: rgba(255, 255, 255, 0.1);
@@ -876,7 +934,7 @@ svg {
   padding-top: 1rem;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   font-size: 0.85rem;
-  color: rgba(253, 251, 247, 0.6);
+  color: rgba(244, 246, 244, 0.6);
   text-align: center;
 }
 
@@ -900,7 +958,7 @@ svg {
   transform: translateX(0);
 }
 
-.cart-drawer__head, .modal__head {
+.cart-drawer__head {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -927,9 +985,11 @@ svg {
 .cart-item img {
   width: 4rem;
   height: 4rem;
-  object-fit: cover;
-  border-radius: 0.7rem;
-  background: var(--bg-alt);
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+  background: #ffffff;
+  border: 1px solid var(--line);
+  padding: 0.25rem;
 }
 
 .cart-item h4 {
@@ -948,7 +1008,7 @@ svg {
 .qty button {
   width: 1.6rem;
   height: 1.6rem;
-  border-radius: 50%;
+  border-radius: var(--radius-sm);
   background: var(--bg-alt);
   font-weight: 700;
 }
@@ -982,7 +1042,7 @@ svg {
   background: var(--ink);
   color: #fff;
   padding: 0.75rem 1.2rem;
-  border-radius: 999px;
+  border-radius: var(--radius-sm);
   z-index: 100;
   font-weight: 700;
   font-size: 0.9rem;
@@ -1071,7 +1131,7 @@ svg {
 }
 
 .breadcrumb a:hover {
-  color: var(--teal-dark);
+  color: var(--teal);
 }
 
 .product-detail {
@@ -1080,16 +1140,21 @@ svg {
 }
 
 .product-detail__media {
-  background: var(--bg-alt);
+  background: #ffffff;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   overflow: hidden;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-sm);
 }
 
 .product-detail__media img {
   width: 100%;
   aspect-ratio: 1;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .product-detail__info h1 {
@@ -1144,7 +1209,7 @@ svg {
   display: inline-flex;
   align-items: center;
   border: 1px solid var(--line);
-  border-radius: 999px;
+  border-radius: var(--radius-sm);
   background: #fff;
   overflow: hidden;
 }
