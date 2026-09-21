@@ -1,10 +1,8 @@
-/* Roastoria — Main Application Scripts */
+/* Roastoria — Standalone Main Script (Zero-Dependency) */
 (function () {
   "use strict";
 
-  // ==========================================
-  // 1. Data Source
-  // ==========================================
+  // 1. Data Store
   const PRODUCTS = [
     {
       id: 1,
@@ -89,17 +87,15 @@
     }
   ];
 
-  // ==========================================
-  // 2. Safe Cart Storage
-  // ==========================================
+  // 2. Local/Safe Cart Manager
   const CART_KEY = "roastoria_cart_v1";
   let fallbackCart = [];
 
   function getCart() {
     try {
       if (typeof window !== "undefined" && window.localStorage) {
-        const data = localStorage.getItem(CART_KEY);
-        return data ? JSON.parse(data) : [];
+        const val = localStorage.getItem(CART_KEY);
+        return val ? JSON.parse(val) : [];
       }
     } catch (e) {}
     return fallbackCart;
@@ -118,11 +114,11 @@
   function addToCart(productId, qty) {
     qty = qty || 1;
     const pId = parseInt(productId, 10);
-    const product = PRODUCTS.find(function (p) { return p.id === pId; });
+    const product = PRODUCTS.find(p => p.id === pId);
     if (!product) return;
 
     let cart = getCart();
-    const item = cart.find(function (i) { return i.id === pId; });
+    const item = cart.find(i => i.id === pId);
     if (item) {
       item.qty += qty;
     } else {
@@ -136,40 +132,38 @@
     }
 
     saveCart(cart);
-    showToast('Added "' + product.name + '" to cart!');
+    showToast(`Added "${product.name}" to cart!`);
     openCartDrawer();
   }
 
   function updateItemQty(productId, delta) {
     const pId = parseInt(productId, 10);
     let cart = getCart();
-    const item = cart.find(function (i) { return i.id === pId; });
+    const item = cart.find(i => i.id === pId);
     if (!item) return;
 
     item.qty += delta;
     if (item.qty <= 0) {
-      cart = cart.filter(function (i) { return i.id !== pId; });
+      cart = cart.filter(i => i.id !== pId);
     }
     saveCart(cart);
   }
 
   function updateCartUI() {
     const cart = getCart();
-    const count = cart.reduce(function (sum, item) { return sum + item.qty; }, 0);
-    const total = cart.reduce(function (sum, item) { return sum + item.price * item.qty; }, 0);
+    const count = cart.reduce((sum, item) => sum + item.qty, 0);
+    const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
 
-    // Badges
-    document.querySelectorAll(".cart-count").forEach(function (el) {
+    document.querySelectorAll(".cart-count").forEach(el => {
       el.textContent = count;
       el.style.display = count > 0 ? "grid" : "none";
     });
 
-    // Drawer Elements
     const listEl = document.getElementById("cartList");
     const footEl = document.getElementById("cartFoot");
     const totalEl = document.getElementById("cartTotal");
 
-    if (totalEl) totalEl.textContent = total + " EGP";
+    if (totalEl) totalEl.textContent = `${total} EGP`;
 
     if (listEl) {
       if (cart.length === 0) {
@@ -178,31 +172,26 @@
       } else {
         if (footEl) footEl.style.display = "grid";
         listEl.innerHTML = cart
-          .map(function (item) {
-            return (
-              '<div class="cart-item">' +
-                '<img src="' + item.image + '" alt="' + item.name + '">' +
-                '<div>' +
-                  '<h4>' + item.name + '</h4>' +
-                  '<div class="muted">' + item.price + ' EGP</div>' +
-                  '<div class="qty">' +
-                    '<button type="button" class="btn-qty" data-id="' + item.id + '" data-delta="-1">−</button>' +
-                    '<span>' + item.qty + '</span>' +
-                    '<button type="button" class="btn-qty" data-id="' + item.id + '" data-delta="1">+</button>' +
-                  '</div>' +
-                '</div>' +
-                '<div class="price">' + (item.price * item.qty) + ' <small>EGP</small></div>' +
-              '</div>'
-            );
-          })
-          .join("");
+          .map(item => `
+            <div class="cart-item">
+              <img src="${item.image}" alt="${item.name}">
+              <div>
+                <h4>${item.name}</h4>
+                <div class="muted">${item.price} EGP</div>
+                <div class="qty">
+                  <button type="button" class="btn-qty" data-id="${item.id}" data-delta="-1">−</button>
+                  <span>${item.qty}</span>
+                  <button type="button" class="btn-qty" data-id="${item.id}" data-delta="1">+</button>
+                </div>
+              </div>
+              <div class="price">${item.price * item.qty} <small>EGP</small></div>
+            </div>
+          `).join("");
       }
     }
   }
 
-  // ==========================================
-  // 3. UI Interactions & Modals
-  // ==========================================
+  // 3. Drawer & UI Handlers
   const drawer = document.getElementById("cartDrawer");
   const drawerOverlay = document.getElementById("drawerOverlay");
 
@@ -210,7 +199,6 @@
     if (drawer && drawerOverlay) {
       drawer.classList.add("is-open");
       drawerOverlay.classList.add("is-open");
-      drawer.setAttribute("aria-hidden", "false");
     }
   }
 
@@ -218,11 +206,10 @@
     if (drawer && drawerOverlay) {
       drawer.classList.remove("is-open");
       drawerOverlay.classList.remove("is-open");
-      drawer.setAttribute("aria-hidden", "true");
     }
   }
 
-  document.querySelectorAll("[data-cart-toggle]").forEach(function (btn) {
+  document.querySelectorAll("[data-cart-toggle]").forEach(btn => {
     btn.addEventListener("click", openCartDrawer);
   });
 
@@ -232,18 +219,16 @@
 
   const cartList = document.getElementById("cartList");
   if (cartList) {
-    cartList.addEventListener("click", function (e) {
+    cartList.addEventListener("click", e => {
       const btn = e.target.closest(".btn-qty");
       if (!btn) return;
-      const id = parseInt(btn.dataset.id, 10);
-      const delta = parseInt(btn.dataset.delta, 10);
-      updateItemQty(id, delta);
+      updateItemQty(parseInt(btn.dataset.id, 10), parseInt(btn.dataset.delta, 10));
     });
   }
 
   const checkoutBtn = document.getElementById("checkoutBtn");
   if (checkoutBtn) {
-    checkoutBtn.addEventListener("click", function () {
+    checkoutBtn.addEventListener("click", () => {
       alert("Thank you for choosing Roastoria! Your order has been placed.");
       saveCart([]);
       closeCartDrawer();
@@ -260,122 +245,177 @@
     }
     toast.textContent = msg;
     toast.classList.add("is-visible");
-    setTimeout(function () {
-      toast.classList.remove("is-visible");
-    }, 2600);
+    setTimeout(() => toast.classList.remove("is-visible"), 2500);
   }
 
-  // Navigation
+  // Mobile Menu
   const menuBtn = document.getElementById("menuToggle");
   const mobileNav = document.getElementById("mobileNav");
   const navOverlay = document.getElementById("navOverlay");
-
   if (menuBtn && mobileNav && navOverlay) {
-    menuBtn.addEventListener("click", function () {
+    menuBtn.addEventListener("click", () => {
       mobileNav.classList.add("is-open");
       navOverlay.classList.add("is-open");
     });
-
-    navOverlay.addEventListener("click", function () {
+    navOverlay.addEventListener("click", () => {
       mobileNav.classList.remove("is-open");
       navOverlay.classList.remove("is-open");
     });
   }
 
-  // ==========================================
-  // 4. Card Builder (Links are 100% verified: product.html?id=X)
-  // ==========================================
+  // 4. Card HTML Template (Price + Add to Cart + View Roast)
   function createProductCardHTML(p) {
-    return (
-      '<article class="product-card" data-category="' + p.category + '">' +
-        '<a href="product.html?id=' + p.id + '" class="product-card__media">' +
-          '<img src="' + p.image + '" alt="' + p.name + '" loading="lazy">' +
-        '</a>' +
-        '<div class="product-card__body">' +
-          '<span class="badge">' + p.tag + '</span>' +
-          '<h3><a href="product.html?id=' + p.id + '">' + p.name + '</a></h3>' +
-          '<p>' + p.shortDesc + '</p>' +
-          '<div class="product-card__price">' +
-            '<span class="price">' + p.price + ' <small>EGP</small></span>' +
-          '</div>' +
-          '<div class="card-actions card-actions--dual">' +
-            '<button type="button" class="btn btn--primary btn--sm js-add-cart" data-id="' + p.id + '">Add to Cart</button>' +
-            '<a href="product.html?id=' + p.id + '" class="btn btn--ghost btn--sm">View Roast</a>' +
-          '</div>' +
-        '</div>' +
-      '</article>'
-    );
+    return `
+      <article class="product-card" data-category="${p.category}">
+        <a href="product.html?id=${p.id}" class="product-card__media">
+          <img src="${p.image}" alt="${p.name}" loading="lazy">
+        </a>
+        <div class="product-card__body">
+          <span class="badge">${p.tag}</span>
+          <h3><a href="product.html?id=${p.id}">${p.name}</a></h3>
+          <p>${p.shortDesc}</p>
+          <div class="product-card__price">
+            <span class="price">${p.price} <small>EGP</small></span>
+          </div>
+          <div class="card-actions card-actions--dual">
+            <button type="button" class="btn btn--primary btn--sm js-add-cart" data-id="${p.id}">Add to Cart</button>
+            <a href="product.html?id=${p.id}" class="btn btn--ghost btn--sm">View Roast</a>
+          </div>
+        </div>
+      </article>
+    `;
   }
 
-  // ==========================================
-  // 5. Render Execution
-  // ==========================================
+  // 5. Page Renderers
   function renderAll() {
-    // 1. Featured on Index (Render only if container exists)
+    // A. Home Featured Grid
     const featuredGrid = document.getElementById("featuredGrid");
     if (featuredGrid) {
       featuredGrid.innerHTML = PRODUCTS.slice(0, 4).map(createProductCardHTML).join("");
     }
 
-    // 2. All Products on products.html
+    // B. Products Page Grid (products.html)
     const allProductsGrid = document.getElementById("allProductsGrid");
     if (allProductsGrid) {
       allProductsGrid.innerHTML = PRODUCTS.map(createProductCardHTML).join("");
     }
 
-    // 3. Articles Grid
+    // C. Articles Page & Home Articles Grid (articles.html / index.html)
     const articlesGrid = document.getElementById("articlesGrid");
-    if (articlesGrid) {
-      articlesGrid.innerHTML = ARTICLES.map(function (a) {
-        return (
-          '<article class="article-card">' +
-            '<a href="article.html?id=' + a.id + '" class="article-card__media">' +
-              '<img src="' + a.image + '" alt="' + a.title + '" loading="lazy">' +
-            '</a>' +
-            '<div class="article-card__body">' +
-              '<span class="badge">' + a.readTime + '</span>' +
-              '<h3><a href="article.html?id=' + a.id + '">' + a.title + '</a></h3>' +
-              '<p>' + a.excerpt + '</p>' +
-              '<div class="card-actions">' +
-                '<a href="article.html?id=' + a.id + '" class="btn btn--ghost btn--sm">Read Guide</a>' +
-              '</div>' +
-            '</div>' +
-          '</article>'
-        );
-      }).join("");
+    const allArticlesGrid = document.getElementById("allArticlesGrid");
+    const targetArticlesGrid = articlesGrid || allArticlesGrid;
+    if (targetArticlesGrid) {
+      targetArticlesGrid.innerHTML = ARTICLES.map(a => `
+        <article class="article-card">
+          <a href="article.html?id=${a.id}" class="article-card__media">
+            <img src="${a.image}" alt="${a.title}" loading="lazy">
+          </a>
+          <div class="article-card__body">
+            <span class="badge">${a.readTime}</span>
+            <h3><a href="article.html?id=${a.id}">${a.title}</a></h3>
+            <p>${a.excerpt}</p>
+            <div class="card-actions">
+              <a href="article.html?id=${a.id}" class="btn btn--ghost btn--sm">Read Guide</a>
+            </div>
+          </div>
+        </article>
+      `).join("");
     }
 
-    // 4. Reviews Grid
+    // D. Reviews Grid
     const reviewsGrid = document.getElementById("reviewsGrid");
     if (reviewsGrid) {
-      reviewsGrid.innerHTML = REVIEWS.map(function (r) {
-        return (
-          '<article class="review-card">' +
-            '<div class="stars">★★★★★</div>' +
-            '<p>"' + r.text + '"</p>' +
-            '<footer>' +
-              '<div class="avatar">' + r.author.charAt(0) + '</div>' +
-              '<div>' +
-                '<strong>' + r.author + '</strong>' +
-                '<span class="muted">' + r.location + '</span>' +
-              '</div>' +
-            '</footer>' +
-          '</article>'
-        );
-      }).join("");
+      reviewsGrid.innerHTML = REVIEWS.map(r => `
+        <article class="review-card">
+          <div class="stars">★★★★★</div>
+          <p>"${r.text}"</p>
+          <footer>
+            <div class="avatar">${r.author.charAt(0)}</div>
+            <div>
+              <strong>${r.author}</strong>
+              <span class="muted">${r.location}</span>
+            </div>
+          </footer>
+        </article>
+      `).join("");
+    }
+
+    // E. Product Detail Page (product.html)
+    const productDetail = document.getElementById("productDetailContainer") || document.getElementById("productDetail");
+    if (productDetail) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const prodId = parseInt(urlParams.get("id"), 10) || 1;
+      const item = PRODUCTS.find(p => p.id === prodId) || PRODUCTS[0];
+
+      productDetail.innerHTML = `
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="index.html">Home</a> &gt; <a href="products.html">Our Roasts</a> &gt; <span>${item.name}</span>
+        </nav>
+        <div class="product-detail">
+          <div class="product-detail__media">
+            <img src="${item.image}" alt="${item.name}">
+          </div>
+          <div class="product-detail__info">
+            <span class="badge">${item.tag}</span>
+            <h1>${item.name}</h1>
+            <div class="product-rating">★★★★★ <span class="muted">(Specialty Grade 86+)</span></div>
+            <div class="price product-detail__price">${item.price} <small>EGP / 250g</small></div>
+            <p class="muted" style="margin-bottom: 1.5rem;">${item.shortDesc}</p>
+            <div class="pdp-actions">
+              <button type="button" class="btn btn--primary js-add-cart" data-id="${item.id}" style="min-width: 180px;">
+                Add to Cart
+              </button>
+            </div>
+            <div class="pdp-block">
+              <h2>Roaster's Tasting Profile</h2>
+              <ul class="benefits-list">
+                <li>100% Arabica Specialty Single Origin</li>
+                <li>Roasted fresh weekly in small artisan batches in Cairo</li>
+                <li>Airtight nitrogen-flushed pouch with degassing valve</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // F. Article Detail Page (article.html)
+    const articleDetail = document.getElementById("articleDetailContainer") || document.getElementById("articleDetail");
+    if (articleDetail) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const artId = parseInt(urlParams.get("id"), 10) || 1;
+      const art = ARTICLES.find(a => a.id === artId) || ARTICLES[0];
+
+      articleDetail.innerHTML = `
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="index.html">Home</a> &gt; <a href="articles.html">Brew Guides</a> &gt; <span>${art.title}</span>
+        </nav>
+        <article class="article">
+          <span class="badge">${art.readTime}</span>
+          <h1>${art.title}</h1>
+          <div class="article-cover">
+            <img src="${art.image}" alt="${art.title}">
+          </div>
+          <div class="article-body">
+            <p>${art.excerpt}</p>
+            <p>Brewing extraordinary coffee at home requires attention to extraction variables: water temperature (92°C–96°C), mineral balance, and uniform grind particle distribution. At Roastoria, we dial in every roast profile to make home extraction effortless.</p>
+          </div>
+        </article>
+      `;
     }
 
     updateCartUI();
   }
 
+  // Execute
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", renderAll);
   } else {
     renderAll();
   }
 
-  // Global Add to Cart Listener
-  document.addEventListener("click", function (e) {
+  // Global Click Event for Add to Cart
+  document.addEventListener("click", e => {
     const btn = e.target.closest(".js-add-cart");
     if (btn) {
       e.preventDefault();
@@ -383,45 +423,32 @@
     }
   });
 
-  // Filter Buttons
-  const filterBtns = document.querySelectorAll("[data-filter]");
-  if (filterBtns.length > 0) {
-    filterBtns.forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        filterBtns.forEach(function (b) { b.classList.remove("is-active"); });
-        btn.classList.add("is-active");
+  // Filter Buttons Handler
+  document.addEventListener("click", e => {
+    const btn = e.target.closest("[data-filter]");
+    if (!btn) return;
 
-        const filter = btn.dataset.filter;
-        const cards = document.querySelectorAll("#allProductsGrid .product-card");
-        let visibleCount = 0;
+    document.querySelectorAll("[data-filter]").forEach(b => b.classList.remove("is-active"));
+    btn.classList.add("is-active");
 
-        cards.forEach(function (card) {
-          const cat = card.dataset.category;
-          if (filter === "all" || cat === filter) {
-            card.classList.remove("is-hidden");
-            visibleCount++;
-          } else {
-            card.classList.add("is-hidden");
-          }
-        });
+    const filter = btn.dataset.filter;
+    const cards = document.querySelectorAll("#allProductsGrid .product-card");
+    let visibleCount = 0;
 
-        const empty = document.getElementById("productsEmpty");
-        if (empty) {
-          if (visibleCount === 0) empty.classList.add("is-visible");
-          else empty.classList.remove("is-visible");
-        }
-      });
+    cards.forEach(card => {
+      const cat = card.dataset.category;
+      if (filter === "all" || cat === filter) {
+        card.classList.remove("is-hidden");
+        visibleCount++;
+      } else {
+        card.classList.add("is-hidden");
+      }
     });
-  }
 
-  // Contact Form
-  const contactForm = document.getElementById("contactForm");
-  if (contactForm) {
-    contactForm.addEventListener("submit", function (e) {
-      e.preventDefault();
-      const successEl = document.getElementById("contactSuccess");
-      if (successEl) successEl.classList.add("is-visible");
-      contactForm.reset();
-    });
-  }
+    const empty = document.getElementById("productsEmpty");
+    if (empty) {
+      if (visibleCount === 0) empty.classList.add("is-visible");
+      else empty.classList.remove("is-visible");
+    }
+  });
 })();
