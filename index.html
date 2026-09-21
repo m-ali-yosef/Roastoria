@@ -9,6 +9,116 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
+
+  <!-- إصلاح فوري ومباشر لضبط السلايدر ومنع تكدس الشرائح -->
+  <style>
+    .hero {
+      padding: 1.5rem 0 2.5rem;
+    }
+    .hero__slider {
+      position: relative;
+      overflow: hidden;
+      border-radius: var(--radius, 0.65rem);
+      min-height: 28rem;
+      height: 28rem;
+      background: #161A18;
+      box-shadow: 0 16px 36px rgba(22, 26, 24, 0.10);
+    }
+    @media (min-width: 720px) {
+      .hero__slider {
+        min-height: 32rem;
+        height: 32rem;
+      }
+    }
+    .hero__slide {
+      position: absolute !important;
+      inset: 0 !important;
+      width: 100% !important;
+      height: 100% !important;
+      background-position: center !important;
+      background-size: cover !important;
+      background-repeat: no-repeat !important;
+      display: flex !important;
+      align-items: flex-end !important;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.8s ease-in-out, visibility 0.8s ease-in-out;
+      z-index: 1;
+    }
+    .hero__slide.is-active {
+      opacity: 1 !important;
+      visibility: visible !important;
+      z-index: 2 !important;
+    }
+    .hero__slide::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to top,
+        rgba(22, 26, 24, 0.95) 10%,
+        rgba(22, 26, 24, 0.50) 60%,
+        rgba(22, 26, 24, 0.25)
+      );
+      z-index: 1;
+    }
+    .hero__content {
+      position: relative;
+      z-index: 3;
+      padding: 2.5rem 2rem;
+      color: #FFFFFF;
+      max-width: 42rem;
+    }
+    .slider-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 10;
+      width: 2.8rem;
+      height: 2.8rem;
+      border-radius: 50%;
+      background: rgba(22, 26, 24, 0.55);
+      backdrop-filter: blur(8px);
+      color: #FFFFFF;
+      font-size: 1.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+    .slider-arrow:hover {
+      background: #1F3F34;
+      border-color: #C28B47;
+      transform: translateY(-50%) scale(1.08);
+    }
+    .slider-arrow--prev { left: 1.25rem; }
+    .slider-arrow--next { right: 1.25rem; }
+    .slider-dots {
+      position: absolute;
+      bottom: 1.5rem;
+      right: 2rem;
+      z-index: 10;
+      display: flex;
+      gap: 0.5rem;
+    }
+    .slider-dot {
+      width: 0.7rem;
+      height: 0.7rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.35);
+      border: 0;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      padding: 0;
+    }
+    .slider-dot.is-active {
+      width: 2rem;
+      background: #C28B47;
+    }
+  </style>
 </head>
 <body>
   <a href="#main" class="skip-link">Skip to content</a>
@@ -67,10 +177,10 @@
   </nav>
 
   <main id="main">
-    <!-- Dynamic Animated Hero Slider -->
+    <!-- Hero Slider -->
     <section class="hero">
       <div class="container">
-        <div class="hero__slider" id="heroSlider" aria-roledescription="carousel" aria-label="Featured Highlights">
+        <div class="hero__slider" id="heroSlider" aria-label="Featured Highlights">
           <!-- Slide 1 -->
           <div class="hero__slide is-active" style="background-image: url('https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=1600&q=80');">
             <div class="hero__content">
@@ -87,11 +197,11 @@
           <!-- Slide 2 -->
           <div class="hero__slide" style="background-image: url('https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=1600&q=80');">
             <div class="hero__content">
-              <span class="eyebrow">Peak Extraction & Precision</span>
+              <span class="eyebrow">Precision Extraction</span>
               <h1>Master Your Daily Pour-Over Ritual.</h1>
               <p>Explore single-origins dialed for V60, Chemex, and Aeropress. Clean cup profiles bursting with floral jasmine and crisp stone fruit.</p>
               <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
-                <a href="products.html?filter=drip" class="btn btn--primary">Shop Drip & V60</a>
+                <a href="products.html" class="btn btn--primary">Shop Drip & V60</a>
                 <a href="articles.html" class="btn btn--ghost">Brew Recipes</a>
               </div>
             </div>
@@ -100,24 +210,24 @@
           <!-- Slide 3 -->
           <div class="hero__slide" style="background-image: url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=1600&q=80');">
             <div class="hero__content">
-              <span class="eyebrow">Tasting Flights & Bundles</span>
-              <h1>The Discovery Box: Three Origins, One Journey.</h1>
+              <span class="eyebrow">Curated Tasting Sets</span>
+              <h1>The Discovery Box: Three Origins, One Flight.</h1>
               <p>Taste the contrast between washed Colombian sweetness, Ethiopian floral notes, and Brazilian nutty chocolate body.</p>
               <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
                 <a href="product.html?id=4" class="btn btn--primary">Get Discovery Trio</a>
-                <a href="products.html" class="btn btn--ghost">All Bundles</a>
+                <a href="products.html" class="btn btn--ghost">All Roasts</a>
               </div>
             </div>
           </div>
 
-          <!-- Navigation Controls -->
+          <!-- Controls -->
           <button type="button" class="slider-arrow slider-arrow--prev" id="slidePrev" aria-label="Previous slide">‹</button>
           <button type="button" class="slider-arrow slider-arrow--next" id="slideNext" aria-label="Next slide">›</button>
 
-          <div class="slider-dots" id="sliderDots" role="tablist" aria-label="Slider navigation">
-            <button type="button" class="slider-dot is-active" data-slide="0" aria-label="Go to slide 1"></button>
-            <button type="button" class="slider-dot" data-slide="1" aria-label="Go to slide 2"></button>
-            <button type="button" class="slider-dot" data-slide="2" aria-label="Go to slide 3"></button>
+          <div class="slider-dots" id="sliderDots">
+            <button type="button" class="slider-dot is-active" data-slide="0" aria-label="Slide 1"></button>
+            <button type="button" class="slider-dot" data-slide="1" aria-label="Slide 2"></button>
+            <button type="button" class="slider-dot" data-slide="2" aria-label="Slide 3"></button>
           </div>
         </div>
       </div>
@@ -384,7 +494,7 @@
           <ul>
             <li><a href="index.html">Home</a></li>
             <li><a href="products.html">All Roasts & Flights</a></li>
-            <li><a href="articles.html">Brew Guides</a></li>
+            <li><a href="articles.html">Brewing Guides</a></li>
             <li><a href="about.html">Roastery & Contact</a></li>
           </ul>
         </div>
@@ -407,5 +517,85 @@
 
   <!-- Scripts -->
   <script src="js/main.js"></script>
+
+  <!-- Inline Slider Controller (تفعيل فوري مباشر بدون تأخير) -->
+  <script>
+    (function () {
+      function startSlider() {
+        const slider = document.getElementById("heroSlider");
+        if (!slider) return;
+
+        const slides = slider.querySelectorAll(".hero__slide");
+        const dots = slider.querySelectorAll(".slider-dot");
+        const prevBtn = document.getElementById("slidePrev");
+        const nextBtn = document.getElementById("slideNext");
+
+        if (slides.length <= 1) return;
+
+        let currentIndex = 0;
+        let timer = null;
+
+        function goToSlide(index) {
+          slides[currentIndex].classList.remove("is-active");
+          if (dots[currentIndex]) dots[currentIndex].classList.remove("is-active");
+
+          currentIndex = (index + slides.length) % slides.length;
+
+          slides[currentIndex].classList.add("is-active");
+          if (dots[currentIndex]) dots[currentIndex].classList.add("is-active");
+        }
+
+        function next() {
+          goToSlide(currentIndex + 1);
+        }
+
+        function prev() {
+          goToSlide(currentIndex - 1);
+        }
+
+        function play() {
+          pause();
+          timer = setInterval(next, 5000);
+        }
+
+        function pause() {
+          if (timer) clearInterval(timer);
+        }
+
+        if (nextBtn) {
+          nextBtn.addEventListener("click", function () {
+            next();
+            play();
+          });
+        }
+
+        if (prevBtn) {
+          prevBtn.addEventListener("click", function () {
+            prev();
+            play();
+          });
+        }
+
+        dots.forEach(function (dot) {
+          dot.addEventListener("click", function () {
+            const idx = parseInt(dot.dataset.slide, 10);
+            goToSlide(idx);
+            play();
+          });
+        });
+
+        slider.addEventListener("mouseenter", pause);
+        slider.addEventListener("mouseleave", play);
+
+        play();
+      }
+
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", startSlider);
+      } else {
+        startSlider();
+      }
+    })();
+  </script>
 </body>
 </html>
