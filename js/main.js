@@ -1,407 +1,428 @@
+/* Roastoria — Complete Standalone Application Scripts */
 (function () {
-  const CART_KEY = "roastoria-cart";
+  "use strict";
 
-  const $ = (sel, root = document) => root.querySelector(sel);   const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+  // ==========================================
+  // 1. Data Source (Embedded for Safe Local & Web Execution)
+  // ==========================================
+  const PRODUCTS = [
+    {
+      id: 1,
+      name: "Colombia Huila — Washed Single Origin",
+      category: "drip",
+      price: 320,
+      tag: "Drip & V60 · All Origins",
+      shortDesc: "Bright & crisp with notes of red apple, caramel sweetness, and honey finish.",
+      image: "images/products/p1.jpg"
+    },
+    {
+      id: 2,
+      name: "Brazil Cerrado — Natural Roast",
+      category: "espresso",
+      price: 290,
+      tag: "Espresso & Milk · All Origins",
+      shortDesc: "Rich body with comforting dark chocolate, roasted hazelnut, and buttery crema.",
+      image: "images/products/p2.jpg"
+    },
+    {
+      id: 3,
+      name: "Ethiopia Yirgacheffe — Floral & Bergamot",
+      category: "drip",
+      price: 350,
+      tag: "Drip & V60 · All Origins",
+      shortDesc: "Delicate floral fragrance with jasmine tea, citrus zest, and peach notes.",
+      image: "images/products/p3.jpg"
+    },
+    {
+      id: 4,
+      name: "The Discovery Trio Box — Complete Taste Flight",
+      category: "bundles",
+      price: 890,
+      tag: "Tasting Sets · Drip & V60 · Espresso & Milk · All Origins",
+      shortDesc: "Explore Colombia, Brazil, and Ethiopia in one curated tasting experience.",
+      image: "images/products/p4.jpg"
+    }
+  ];
 
-  function money(n) {
-    return `EGP ${n}`;
-  }
+  const ARTICLES = [
+    {
+      id: 1,
+      title: "How to Grind Coffee for V60, Espresso, and French Press",
+      readTime: "September 15, 2026 · 4 min read",
+      excerpt: "Grind size determines whether your coffee tastes sweet and balanced or bitter and sour. Here is how to nail it.",
+      image: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=800&q=75"
+    },
+    {
+      id: 2,
+      title: "Why Freshly Roasted Coffee Changes Everything",
+      readTime: "September 8, 2026 · 5 min read",
+      excerpt: "Supermarket coffee sits on shelves for months losing aroma. Here is why our 24-hour roast guarantee matters.",
+      image: "https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=800&q=75"
+    },
+    {
+      id: 3,
+      title: "Understanding Coffee Flavor Notes: It's Not Artificial Flavoring",
+      readTime: "August 28, 2026 · 4 min read",
+      excerpt: "When we say 'Jasmine and Peach', we didn't add syrup. Discover how altitude, soil, and processing create real flavor.",
+      image: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=800&q=75"
+    }
+  ];
+
+  const REVIEWS = [
+    {
+      id: 1,
+      author: "Omar K.",
+      location: "Zamalek, Cairo",
+      text: "The Colombia Huila blew me away on my morning V60. Clean, bright, and genuinely freshly roasted."
+    },
+    {
+      id: 2,
+      author: "Nouran E.",
+      location: "New Cairo",
+      text: "Roastoria's Brazil Cerrado makes the thickest espresso crema with silky milk notes. Super fast delivery!"
+    },
+    {
+      id: 3,
+      author: "Tarek H.",
+      location: "Maadi, Cairo",
+      text: "Packaging is airtight and beautiful. The tasting notes are actually accurate and not just marketing words."
+    }
+  ];
+
+  // ==========================================
+  // 2. Safe Cart Storage
+  // ==========================================
+  const CART_KEY = "roastoria_cart_v1";
+  let fallbackCart = [];
 
   function getCart() {
     try {
-      return JSON.parse(localStorage.getItem(CART_KEY)) || [];
-    } catch (e) {
-      return [];
-    }
+      if (typeof window !== "undefined" && window.localStorage) {
+        const data = localStorage.getItem(CART_KEY);
+        return data ? JSON.parse(data) : [];
+      }
+    } catch (e) {}
+    return fallbackCart;
   }
 
-  function saveCart(items) {
-    localStorage.setItem(CART_KEY, JSON.stringify(items));
-    updateCartCount();
-    renderCart();
+  function saveCart(cart) {
+    fallbackCart = cart;
+    try {
+      if (typeof window !== "undefined" && window.localStorage) {
+        localStorage.setItem(CART_KEY, JSON.stringify(cart));
+      }
+    } catch (e) {}
+    updateCartUI();
   }
 
-  function cartCount() {
-    return getCart().reduce((sum, item) => sum + item.qty, 0);
-  }
-
-  function updateCartCount() {
-    $$("[data-cart-count]").forEach((el) => {
-      el.textContent = cartCount();
-      el.hidden = cartCount() === 0;
-    });
-  }
-
-  function addToCart(id, qty = 1) {
-    const product = PRODUCTS.find((p) => p.id === id);
+  function addToCart(productId, qty) {
+    qty = qty || 1;
+    const pId = parseInt(productId, 10);
+    const product = PRODUCTS.find(function (p) { return p.id === pId; });
     if (!product) return;
-    const cart = getCart();
-    const existing = cart.find((i) => i.id === id);
-    if (existing) existing.qty += qty;
-    else cart.push({ id, qty });
-    saveCart(cart);
-    toast(`"${product.name}" added to cart`);
-  }
 
-  function setQty(id, qty) {
     let cart = getCart();
-    if (qty <= 0) cart = cart.filter((i) => i.id !== id);
-    else {
-      const item = cart.find((i) => i.id === id);
-      if (item) item.qty = qty;
+    const item = cart.find(function (i) { return i.id === pId; });
+    if (item) {
+      item.qty += qty;
+    } else {
+      cart.push({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        image: product.image,
+        qty: qty
+      });
+    }
+
+    saveCart(cart);
+    showToast('Added "' + product.name + '" to cart!');
+    openCartDrawer();
+  }
+
+  function updateItemQty(productId, delta) {
+    const pId = parseInt(productId, 10);
+    let cart = getCart();
+    const item = cart.find(function (i) { return i.id === pId; });
+    if (!item) return;
+
+    item.qty += delta;
+    if (item.qty <= 0) {
+      cart = cart.filter(function (i) { return i.id !== pId; });
     }
     saveCart(cart);
   }
 
-  function toast(message) {
-    let el = $(".toast");
-    if (!el) {
-      el = document.createElement("div");
-      el.className = "toast";
-      el.setAttribute("role", "status");
-      document.body.appendChild(el);
-    }
-    el.textContent = message;
-    el.classList.add("is-visible");
-    clearTimeout(toast._t);
-    toast._t = setTimeout(() => el.classList.remove("is-visible"), 2400);
-  }
-
-  function productById(id) {
-    return PRODUCTS.find((p) => p.id === id);
-  }
-
-  function skinLabel(ids) {
-    return ids
-      .map((id) => SKIN_TYPES.find((s) => s.id === id)?.label)
-      .filter(Boolean)
-      .join(" · ");
-  }
-
-  /* بطاقة المنتج الخارجية - تشجع على الدخول لصفحة المنتج */
-  function productCard(p) {
-    return `
-      <article class="product-card" data-product="${p.id}" data-skin="${p.skin.join(" ")}">
-        <a class="product-card__media" href="product.html?id=${p.id}">
-          <img src="${p.image}" alt="${p.name}" width="640" height="640" loading="lazy">
-        </a>
-        <div class="product-card__body">
-          <span class="badge">${skinLabel(p.skin)}</span>
-          <h3><a href="product.html?id=${p.id}">${p.name}</a></h3>
-          <p>${p.short}</p>
-          <div class="card-actions">
-            <a class="btn btn--primary btn--sm" href="product.html?id=${p.id}">View Roast & Order</a>
-          </div>
-        </div>
-      </article>
-    `;
-  }
-
-  function articleCard(a) {
-    return `
-      <article class="article-card">
-        <a class="article-card__media" href="article.html?id=${a.id}">
-          <img src="${a.image}" alt="" width="800" height="500" loading="lazy">
-        </a>
-        <div class="article-card__body">
-          <span class="badge">${a.date} · ${a.readTime}</span>
-          <h3><a href="article.html?id=${a.id}">${a.title}</a></h3>
-          <p>${a.excerpt}</p>
-          <a class="btn btn--ghost btn--sm" href="article.html?id=${a.id}">Read Guide</a>
-        </div>
-      </article>
-    `;
-  }
-
-  function renderFeatured() {
-    const root = $("[data-featured]");
-    if (!root || typeof PRODUCTS === "undefined") return;
-    root.innerHTML = PRODUCTS.filter((p) => p.featured)
-      .slice(0, 4)
-      .map((p) => productCard(p))
-      .join("");
-  }
-
-  function renderCatalog() {
-    const root = $("[data-catalog]");
-    if (!root || typeof PRODUCTS === "undefined") return;
-    root.innerHTML = PRODUCTS.map((p) => productCard(p)).join("");
-    bindFilters();
-  }
-
-  function bindFilters() {
-    const buttons = $$("[data-filter]");     const cards = $$("[data-catalog] .product-card");
-    const empty = $("[data-empty]");
-
-    buttons.forEach((btn) => {
-      btn.addEventListener("click", () => {
-        buttons.forEach((b) => b.classList.remove("is-active"));
-        btn.classList.add("is-active");
-        const type = btn.dataset.filter;
-        let visible = 0;
-        cards.forEach((card) => {
-          const match = type === "all" || card.dataset.skin.includes(type);
-          card.classList.toggle("is-hidden", !match);
-          if (match) visible += 1;
-        });
-        empty?.classList.toggle("is-visible", visible === 0);
-      });
-    });
-  }
-
-  function renderHomeArticles() {
-    const root = $("[data-home-articles]");
-    if (!root || typeof ARTICLES === "undefined") return;
-    root.innerHTML = ARTICLES.slice(0, 3).map(articleCard).join("");
-  }
-
-  function renderBlog() {
-    const root = $("[data-blog]");
-    if (!root || typeof ARTICLES === "undefined") return;
-    root.innerHTML = ARTICLES.map(articleCard).join("");
-  }
-
-  function renderArticlePage() {
-    const root = $("[data-article]");
-    if (!root || typeof ARTICLES === "undefined") return;
-    const id = new URLSearchParams(location.search).get("id");
-    const article = ARTICLES.find((a) => a.id === id) || ARTICLES[0];
-    document.title = `${article.title} | Roastoria`;
-    root.innerHTML = `
-      <div class="article-meta">
-        <span>${article.date}</span>
-        <span>${article.readTime}</span>
-      </div>
-      <h1>${article.title}</h1>
-      <div class="article-cover">
-        <img src="${article.image}" alt="" width="1200" height="675">
-      </div>
-      <div class="article-body">
-        ${article.body.map((p) => `<p>${p}</p>`).join("")}
-      </div>
-    `;
-  }
-
-  function renderTestimonials() {
-    const root = $("[data-reviews]");
-    if (!root || typeof TESTIMONIALS === "undefined") return;
-    root.innerHTML = TESTIMONIALS.map((t) => {
-      const initial = t.name.trim().charAt(0);
-      const stars = "★★★★★".slice(0, t.rating) + "☆☆☆☆☆".slice(t.rating);
-      return `
-        <blockquote class="review-card">
-          <div class="stars" aria-label="Rating ${t.rating} out of 5">${stars}</div>
-          <p>"${t.text}"</p>
-          <footer>
-            <div class="avatar" aria-hidden="true">${initial}</div>
-            <div>
-              <strong>${t.name}</strong>
-              <span class="muted">${t.city}</span>
-            </div>
-          </footer>
-        </blockquote>
-      `;
-    }).join("");
-  }
-
-  function openDrawer(sel) {
-    $(sel)?.classList.add("is-open");
-    $("[data-drawer-overlay]")?.classList.add("is-open");     document.body.style.overflow = "hidden";   }    function closeDrawers() {     $$(".cart-drawer, .mobile-nav, .nav-overlay, .drawer-overlay, .modal").forEach((el) => {
-      el.classList.remove("is-open");
-    });
-    document.body.style.overflow = "";
-  }
-
-  function renderCart() {
-    const list = $("[data-cart-list]");
-    const totalEl = $("[data-cart-total]");
-    if (!list) return;
+  function updateCartUI() {
     const cart = getCart();
-    if (!cart.length) {
-      list.innerHTML = `<p class="cart-empty">Your cart is currently empty. Explore our roasts to start your order.</p>`;
-      if (totalEl) totalEl.textContent = money(0);
-      return;
+    const count = cart.reduce(function (sum, item) { return sum + item.qty; }, 0);
+    const total = cart.reduce(function (sum, item) { return sum + item.price * item.qty; }, 0);
+
+    // Badges
+    document.querySelectorAll(".cart-count").forEach(function (el) {
+      el.textContent = count;
+      el.style.display = count > 0 ? "grid" : "none";
+    });
+
+    // Drawer Elements
+    const listEl = document.getElementById("cartList");
+    const footEl = document.getElementById("cartFoot");
+    const totalEl = document.getElementById("cartTotal");
+
+    if (totalEl) totalEl.textContent = total + " EGP";
+
+    if (listEl) {
+      if (cart.length === 0) {
+        listEl.innerHTML = '<div class="cart-empty"><p>Your coffee box is empty.</p></div>';
+        if (footEl) footEl.style.display = "none";
+      } else {
+        if (footEl) footEl.style.display = "grid";
+        listEl.innerHTML = cart
+          .map(function (item) {
+            return (
+              '<div class="cart-item">' +
+                '<img src="' + item.image + '" alt="' + item.name + '">' +
+                '<div>' +
+                  '<h4>' + item.name + '</h4>' +
+                  '<div class="muted">' + item.price + ' EGP</div>' +
+                  '<div class="qty">' +
+                    '<button type="button" class="btn-qty" data-id="' + item.id + '" data-delta="-1">−</button>' +
+                    '<span>' + item.qty + '</span>' +
+                    '<button type="button" class="btn-qty" data-id="' + item.id + '" data-delta="1">+</button>' +
+                  '</div>' +
+                '</div>' +
+                '<div class="price">' + (item.price * item.qty) + ' <small>EGP</small></div>' +
+              '</div>'
+            );
+          })
+          .join("");
+      }
     }
-    let total = 0;
-    list.innerHTML = cart
-      .map((item) => {
-        const p = productById(item.id);
-        if (!p) return "";
-        total += p.price * item.qty;
-        return `
-          <div class="cart-item">
-            <img src="${p.image}" alt="" width="80" height="80">
-            <div>
-              <h4>${p.name}</h4>
-              <div class="muted">${money(p.price)}</div>
-              <div class="qty">
-                <button type="button" data-qty="${p.id}" data-delta="-1" aria-label="Decrease">−</button>
-                <span>${item.qty}</span>
-                <button type="button" data-qty="${p.id}" data-delta="1" aria-label="Increase">+</button>
-              </div>
-            </div>
-            <button type="button" class="icon-btn" data-remove="${p.id}" aria-label="Remove">✕</button>
-          </div>
-        `;
-      })
-      .join("");
-    if (totalEl) totalEl.textContent = money(total);
   }
 
-  function renderProductPage() {
-    const root = $("[data-product-page]");
-    if (!root || typeof PRODUCTS === "undefined") return;
-    const id = new URLSearchParams(location.search).get("id");
-    const p = productById(id) || PRODUCTS[0];
-    document.title = `${p.name} | Roastoria`;
-    const related = PRODUCTS.filter(
-      (item) => item.id !== p.id && item.skin.some((s) => p.skin.includes(s))
-    ).slice(0, 3);
+  // ==========================================
+  // 3. UI Interactions & Modals
+  // ==========================================
+  const drawer = document.getElementById("cartDrawer");
+  const drawerOverlay = document.getElementById("drawerOverlay");
 
-    root.innerHTML = `
-      <nav class="breadcrumb" aria-label="Breadcrumb">
-        <a href="index.html">Home</a>
-        <span>/</span>
-        <a href="products.html">Roasts</a>
-        <span>/</span>
-        <span>${p.name}</span>
-      </nav>
-      <div class="product-detail">
-        <div class="product-detail__media">
-          <img src="${p.image}" alt="${p.name}" width="900" height="700">
-        </div>
-        <div class="product-detail__info">
-          <span class="badge">${skinLabel(p.skin)}</span>
-          <h1>${p.name}</h1>
-          <p class="product-rating">★ ${p.rating} <span class="muted">(${p.reviewsCount} verified reviews)</span></p>
-          <p class="muted">${p.description}</p>
-          <p class="price product-detail__price">${money(p.price)} <small>/ ${p.volume}</small></p>
-          <dl class="specs">
-            <div><dt>Weight / Grind</dt><dd>${p.volume}</dd></div>
-            <div><dt>Brew Suitability</dt><dd>${skinLabel(p.skin)}</dd></div>
-          </dl>
-          <div class="pdp-actions">
-            <div class="qty-box">
-              <button type="button" data-pdp-delta="-1" aria-label="Decrease">−</button>
-              <input id="pdp-qty" data-pdp-qty type="number" min="1" value="1" aria-label="Quantity">
-              <button type="button" data-pdp-delta="1" aria-label="Increase">+</button>
-            </div>
-            <button class="btn btn--primary" type="button" data-pdp-add="${p.id}">Add to Cart / Order Fresh</button>
-          </div>
-          <section class="pdp-block">
-            <h2>Roast & Quality Highlights</h2>
-            <ul class="benefits-list">${p.benefits.map((b) => `<li>${b}</li>`).join("")}</ul>
-          </section>
-          <section class="pdp-block">
-            <h2>Origin & Harvest Details</h2>
-            <div class="chips">${p.ingredients.map((i) => `<span class="chip">${i}</span>`).join("")}</div>
-          </section>
-          <section class="pdp-block">
-            <h2>Recommended Brewing Recipe</h2>
-            <p class="muted">${p.howToUse}</p>
-          </section>
-        </div>
-      </div>
-      ${
-        related.length
-          ? `<section class="section" style="padding-bottom:0">
-              <div class="section__head"><h2>You May Also Like</h2></div>
-              <div class="grid grid--3">${related.map(productCard).join("")}</div>
-            </section>`
-          : ""
-      }
-    `;
+  function openCartDrawer() {
+    if (drawer && drawerOverlay) {
+      drawer.classList.add("is-open");
+      drawerOverlay.classList.add("is-open");
+      drawer.setAttribute("aria-hidden", "false");
+    }
+  }
 
-    $$("[data-pdp-delta]", root).forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const input = $("[data-pdp-qty]", root);
-        const next = Math.max(1, Number(input.value || 1) + Number(btn.dataset.pdpDelta));
-        input.value = next;
+  function closeCartDrawer() {
+    if (drawer && drawerOverlay) {
+      drawer.classList.remove("is-open");
+      drawerOverlay.classList.remove("is-open");
+      drawer.setAttribute("aria-hidden", "true");
+    }
+  }
+
+  document.querySelectorAll("[data-cart-toggle]").forEach(function (btn) {
+    btn.addEventListener("click", openCartDrawer);
+  });
+
+  const closeDrawerBtn = document.getElementById("closeCart");
+  if (closeDrawerBtn) closeDrawerBtn.addEventListener("click", closeCartDrawer);
+  if (drawerOverlay) drawerOverlay.addEventListener("click", closeCartDrawer);
+
+  const cartList = document.getElementById("cartList");
+  if (cartList) {
+    cartList.addEventListener("click", function (e) {
+      const btn = e.target.closest(".btn-qty");
+      if (!btn) return;
+      const id = parseInt(btn.dataset.id, 10);
+      const delta = parseInt(btn.dataset.delta, 10);
+      updateItemQty(id, delta);
+    });
+  }
+
+  const checkoutBtn = document.getElementById("checkoutBtn");
+  if (checkoutBtn) {
+    checkoutBtn.addEventListener("click", function () {
+      alert("Thank you for choosing Roastoria! Your order has been placed.");
+      saveCart([]);
+      closeCartDrawer();
+    });
+  }
+
+  function showToast(msg) {
+    let toast = document.getElementById("siteToast");
+    if (!toast) {
+      toast = document.createElement("div");
+      toast.id = "siteToast";
+      toast.className = "toast";
+      document.body.appendChild(toast);
+    }
+    toast.textContent = msg;
+    toast.classList.add("is-visible");
+    setTimeout(function () {
+      toast.classList.remove("is-visible");
+    }, 2600);
+  }
+
+  // Navigation
+  const menuBtn = document.getElementById("menuToggle");
+  const mobileNav = document.getElementById("mobileNav");
+  const navOverlay = document.getElementById("navOverlay");
+
+  if (menuBtn && mobileNav && navOverlay) {
+    menuBtn.addEventListener("click", function () {
+      mobileNav.classList.add("is-open");
+      navOverlay.classList.add("is-open");
+    });
+
+    navOverlay.addEventListener("click", function () {
+      mobileNav.classList.remove("is-open");
+      navOverlay.classList.remove("is-open");
+    });
+  }
+
+  // ==========================================
+  // 4. Card Builder (Price + Add to Cart + View Roast)
+  // ==========================================
+  function createProductCardHTML(p) {
+    return (
+      '<article class="product-card" data-category="' + p.category + '">' +
+        '<a href="product.html?id=' + p.id + '" class="product-card__media">' +
+          '<img src="' + p.image + '" alt="' + p.name + '" loading="lazy">' +
+        '</a>' +
+        '<div class="product-card__body">' +
+          '<span class="badge">' + p.tag + '</span>' +
+          '<h3><a href="product.html?id=' + p.id + '">' + p.name + '</a></h3>' +
+          '<p>' + p.shortDesc + '</p>' +
+          '<div class="product-card__price">' +
+            '<span class="price">' + p.price + ' <small>EGP</small></span>' +
+          '</div>' +
+          '<div class="card-actions card-actions--dual">' +
+            '<button type="button" class="btn btn--primary btn--sm js-add-cart" data-id="' + p.id + '">Add to Cart</button>' +
+            '<a href="product.html?id=' + p.id + '" class="btn btn--ghost btn--sm">View Roast</a>' +
+          '</div>' +
+        '</div>' +
+      '</article>'
+    );
+  }
+
+  // ==========================================
+  // 5. Direct Render Execution
+  // ==========================================
+  function renderAll() {
+    // Render Products (Featured)
+    const featuredGrid = document.getElementById("featuredGrid");
+    if (featuredGrid) {
+      featuredGrid.innerHTML = PRODUCTS.slice(0, 4).map(createProductCardHTML).join("");
+    }
+
+    // Render Products (Full Catalogue)
+    const allProductsGrid = document.getElementById("allProductsGrid");
+    if (allProductsGrid) {
+      allProductsGrid.innerHTML = PRODUCTS.map(createProductCardHTML).join("");
+    }
+
+    // Render Articles
+    const articlesGrid = document.getElementById("articlesGrid");
+    if (articlesGrid) {
+      articlesGrid.innerHTML = ARTICLES.map(function (a) {
+        return (
+          '<article class="article-card">' +
+            '<a href="article.html?id=' + a.id + '" class="article-card__media">' +
+              '<img src="' + a.image + '" alt="' + a.title + '" loading="lazy">' +
+            '</a>' +
+            '<div class="article-card__body">' +
+              '<span class="badge">' + a.readTime + '</span>' +
+              '<h3><a href="article.html?id=' + a.id + '">' + a.title + '</a></h3>' +
+              '<p>' + a.excerpt + '</p>' +
+              '<div class="card-actions">' +
+                '<a href="article.html?id=' + a.id + '" class="btn btn--ghost btn--sm">Read Guide</a>' +
+              '</div>' +
+            '</div>' +
+          '</article>'
+        );
+      }).join("");
+    }
+
+    // Render Reviews
+    const reviewsGrid = document.getElementById("reviewsGrid");
+    if (reviewsGrid) {
+      reviewsGrid.innerHTML = REVIEWS.map(function (r) {
+        return (
+          '<article class="review-card">' +
+            '<div class="stars">★★★★★</div>' +
+            '<p>"' + r.text + '"</p>' +
+            '<footer>' +
+              '<div class="avatar">' + r.author.charAt(0) + '</div>' +
+              '<div>' +
+                '<strong>' + r.author + '</strong>' +
+                '<span class="muted">' + r.location + '</span>' +
+              '</div>' +
+            '</footer>' +
+          '</article>'
+        );
+      }).join("");
+    }
+
+    updateCartUI();
+  }
+
+  // Render Immediately
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", renderAll);
+  } else {
+    renderAll();
+  }
+
+  // Card Event Listeners
+  document.addEventListener("click", function (e) {
+    const btn = e.target.closest(".js-add-cart");
+    if (btn) {
+      e.preventDefault();
+      addToCart(btn.dataset.id, 1);
+    }
+  });
+
+  // Filter Buttons
+  const filterBtns = document.querySelectorAll("[data-filter]");
+  if (filterBtns.length > 0) {
+    filterBtns.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        filterBtns.forEach(function (b) { b.classList.remove("is-active"); });
+        btn.classList.add("is-active");
+
+        const filter = btn.dataset.filter;
+        const cards = document.querySelectorAll("#allProductsGrid .product-card");
+        let visibleCount = 0;
+
+        cards.forEach(function (card) {
+          const cat = card.dataset.category;
+          if (filter === "all" || cat === filter) {
+            card.classList.remove("is-hidden");
+            visibleCount++;
+          } else {
+            card.classList.add("is-hidden");
+          }
+        });
+
+        const empty = document.getElementById("productsEmpty");
+        if (empty) {
+          if (visibleCount === 0) empty.classList.add("is-visible");
+          else empty.classList.remove("is-visible");
+        }
       });
     });
-
-    $("[data-pdp-add]", root)?.addEventListener("click", () => {
-      const qty = Math.max(1, Number($("[data-pdp-qty]", root)?.value || 1));
-      addToCart(p.id, qty);
-    });
   }
 
-  function bindUI() {
-    $("[data-open-menu]")?.addEventListener("click", () => {
-      $(".mobile-nav")?.classList.add("is-open");
-      $(".nav-overlay")?.classList.add("is-open");
-      document.body.style.overflow = "hidden";
-    });
-
-    $("[data-open-cart]")?.addEventListener("click", () => {       renderCart();       openDrawer(".cart-drawer");     });      $$("[data-close]").forEach((btn) => btn.addEventListener("click", closeDrawers));
-    $(".nav-overlay")?.addEventListener("click", closeDrawers);
-    $("[data-drawer-overlay]")?.addEventListener("click", closeDrawers);
-    $("[data-modal-backdrop]")?.addEventListener("click", closeDrawers);
-
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") closeDrawers();
-    });
-
-    document.addEventListener("click", (e) => {
-      const add = e.target.closest("[data-add]");
-      if (add) {
-        addToCart(add.dataset.add);
-        return;
-      }
-      const remove = e.target.closest("[data-remove]");
-      if (remove) {
-        setQty(remove.dataset.remove, 0);
-        return;
-      }
-      const qtyBtn = e.target.closest("[data-qty]");
-      if (qtyBtn) {
-        const item = getCart().find((i) => i.id === qtyBtn.dataset.qty);
-        if (!item) return;
-        setQty(item.id, item.qty + Number(qtyBtn.dataset.delta));
-      }
-    });
-
-    $("[data-checkout]")?.addEventListener("click", () => {
-      if (!getCart().length) {
-        toast("Please add coffee to your cart first");
-        return;
-      }
-      localStorage.removeItem(CART_KEY);
-      updateCartCount();
-      renderCart();
-      closeDrawers();
-      toast("Your fresh roast order has been placed successfully!");
-    });
-  }
-
-  function bindContactForm() {
-    const form = $("[data-contact-form]");
-    if (!form) return;
-    form.addEventListener("submit", (e) => {
+  // Contact Form
+  const contactForm = document.getElementById("contactForm");
+  if (contactForm) {
+    contactForm.addEventListener("submit", function (e) {
       e.preventDefault();
-      const name = form.elements.name;
-      const email = form.elements.email;
-      const message = form.elements.message;
-      let ok = true;
-
-      [
-        [name, name.value.trim().length >= 2],
-        [email, /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())],         [message, message.value.trim().length >= 8],       ].forEach(([input, valid]) => {         input.closest(".field")?.classList.toggle("is-invalid", !valid);         if (!valid) ok = false;       });        if (!ok) return;       form.reset();       $$(".field.is-invalid", form).forEach((f) => f.classList.remove("is-invalid"));
-      $("[data-form-success]")?.classList.add("is-visible");     });   }    function markActiveNav() {     const page = document.body.dataset.page;     $$(`[data-nav="${page}"]`).forEach((a) => a.classList.add("is-active"));
+      const successEl = document.getElementById("contactSuccess");
+      if (successEl) successEl.classList.add("is-visible");
+      contactForm.reset();
+    });
   }
-
-  document.addEventListener("DOMContentLoaded", () => {
-    markActiveNav();
-    renderFeatured();
-    renderCatalog();
-    renderHomeArticles();
-    renderBlog();
-    renderArticlePage();
-    renderProductPage();
-    renderTestimonials();
-    bindUI();
-    bindContactForm();
-    updateCartCount();
-    renderCart();
-  });
 })();
