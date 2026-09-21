@@ -1,4 +1,4 @@
-/* Roastoria — Standalone Main Script (Zero-Dependency) */
+/* Roastoria — Standalone Main Script (With Hero Carousel Slider) */
 (function () {
   "use strict";
 
@@ -87,7 +87,7 @@
     }
   ];
 
-  // 2. Local/Safe Cart Manager
+  // 2. Safe Cart Manager
   const CART_KEY = "roastoria_cart_v1";
   let fallbackCart = [];
 
@@ -191,7 +191,7 @@
     }
   }
 
-  // 3. Drawer & UI Handlers
+  // 3. Cart Drawer & UI Controls
   const drawer = document.getElementById("cartDrawer");
   const drawerOverlay = document.getElementById("drawerOverlay");
 
@@ -248,7 +248,7 @@
     setTimeout(() => toast.classList.remove("is-visible"), 2500);
   }
 
-  // Mobile Menu
+  // Mobile Navigation
   const menuBtn = document.getElementById("menuToggle");
   const mobileNav = document.getElementById("mobileNav");
   const navOverlay = document.getElementById("navOverlay");
@@ -263,158 +263,77 @@
     });
   }
 
-  // 4. Card HTML Template (Price + Add to Cart + View Roast)
-  function createProductCardHTML(p) {
-    return `
-      <article class="product-card" data-category="${p.category}">
-        <a href="product.html?id=${p.id}" class="product-card__media">
-          <img src="${p.image}" alt="${p.name}" loading="lazy">
-        </a>
-        <div class="product-card__body">
-          <span class="badge">${p.tag}</span>
-          <h3><a href="product.html?id=${p.id}">${p.name}</a></h3>
-          <p>${p.shortDesc}</p>
-          <div class="product-card__price">
-            <span class="price">${p.price} <small>EGP</small></span>
-          </div>
-          <div class="card-actions card-actions--dual">
-            <button type="button" class="btn btn--primary btn--sm js-add-cart" data-id="${p.id}">Add to Cart</button>
-            <a href="product.html?id=${p.id}" class="btn btn--ghost btn--sm">View Roast</a>
-          </div>
-        </div>
-      </article>
-    `;
+  // 4. Hero Slider Controller
+  function initHeroSlider() {
+    const slider = document.getElementById("heroSlider");
+    if (!slider) return;
+
+    const slides = slider.querySelectorAll(".hero__slide");
+    const dots = slider.querySelectorAll(".slider-dot");
+    const prevBtn = document.getElementById("slidePrev");
+    const nextBtn = document.getElementById("slideNext");
+
+    if (slides.length <= 1) return;
+
+    let currentIndex = 0;
+    let timer = null;
+
+    function goToSlide(index) {
+      slides[currentIndex].classList.remove("is-active");
+      if (dots[currentIndex]) dots[currentIndex].classList.remove("is-active");
+
+      currentIndex = (index + slides.length) % slides.length;
+
+      slides[currentIndex].classList.add("is-active");
+      if (dots[currentIndex]) dots[currentIndex].classList.add("is-active");
+    }
+
+    function nextSlide() {
+      goToSlide(currentIndex + 1);
+    }
+
+    function prevSlide() {
+      goToSlide(currentIndex - 1);
+    }
+
+    function startAutoPlay() {
+      stopAutoPlay();
+      timer = setInterval(nextSlide, 5000);
+    }
+
+    function stopAutoPlay() {
+      if (timer) clearInterval(timer);
+    }
+
+    if (nextBtn) {
+      nextBtn.addEventListener("click", () => {
+        nextSlide();
+        startAutoPlay();
+      });
+    }
+
+    if (prevBtn) {
+      prevBtn.addEventListener("click", () => {
+        prevSlide();
+        startAutoPlay();
+      });
+    }
+
+    dots.forEach(dot => {
+      dot.addEventListener("click", () => {
+        const slideIndex = parseInt(dot.dataset.slide, 10);
+        goToSlide(slideIndex);
+        startAutoPlay();
+      });
+    });
+
+    slider.addEventListener("mouseenter", stopAutoPlay);
+    slider.addEventListener("mouseleave", startAutoPlay);
+
+    startAutoPlay();
   }
 
-  // 5. Page Renderers
-  function renderAll() {
-    // A. Home Featured Grid
-    const featuredGrid = document.getElementById("featuredGrid");
-    if (featuredGrid) {
-      featuredGrid.innerHTML = PRODUCTS.slice(0, 4).map(createProductCardHTML).join("");
-    }
-
-    // B. Products Page Grid (products.html)
-    const allProductsGrid = document.getElementById("allProductsGrid");
-    if (allProductsGrid) {
-      allProductsGrid.innerHTML = PRODUCTS.map(createProductCardHTML).join("");
-    }
-
-    // C. Articles Page & Home Articles Grid (articles.html / index.html)
-    const articlesGrid = document.getElementById("articlesGrid");
-    const allArticlesGrid = document.getElementById("allArticlesGrid");
-    const targetArticlesGrid = articlesGrid || allArticlesGrid;
-    if (targetArticlesGrid) {
-      targetArticlesGrid.innerHTML = ARTICLES.map(a => `
-        <article class="article-card">
-          <a href="article.html?id=${a.id}" class="article-card__media">
-            <img src="${a.image}" alt="${a.title}" loading="lazy">
-          </a>
-          <div class="article-card__body">
-            <span class="badge">${a.readTime}</span>
-            <h3><a href="article.html?id=${a.id}">${a.title}</a></h3>
-            <p>${a.excerpt}</p>
-            <div class="card-actions">
-              <a href="article.html?id=${a.id}" class="btn btn--ghost btn--sm">Read Guide</a>
-            </div>
-          </div>
-        </article>
-      `).join("");
-    }
-
-    // D. Reviews Grid
-    const reviewsGrid = document.getElementById("reviewsGrid");
-    if (reviewsGrid) {
-      reviewsGrid.innerHTML = REVIEWS.map(r => `
-        <article class="review-card">
-          <div class="stars">★★★★★</div>
-          <p>"${r.text}"</p>
-          <footer>
-            <div class="avatar">${r.author.charAt(0)}</div>
-            <div>
-              <strong>${r.author}</strong>
-              <span class="muted">${r.location}</span>
-            </div>
-          </footer>
-        </article>
-      `).join("");
-    }
-
-    // E. Product Detail Page (product.html)
-    const productDetail = document.getElementById("productDetailContainer") || document.getElementById("productDetail");
-    if (productDetail) {
-      const urlParams = new URLSearchParams(window.location.search);
-      const prodId = parseInt(urlParams.get("id"), 10) || 1;
-      const item = PRODUCTS.find(p => p.id === prodId) || PRODUCTS[0];
-
-      productDetail.innerHTML = `
-        <nav class="breadcrumb" aria-label="Breadcrumb">
-          <a href="index.html">Home</a> &gt; <a href="products.html">Our Roasts</a> &gt; <span>${item.name}</span>
-        </nav>
-        <div class="product-detail">
-          <div class="product-detail__media">
-            <img src="${item.image}" alt="${item.name}">
-          </div>
-          <div class="product-detail__info">
-            <span class="badge">${item.tag}</span>
-            <h1>${item.name}</h1>
-            <div class="product-rating">★★★★★ <span class="muted">(Specialty Grade 86+)</span></div>
-            <div class="price product-detail__price">${item.price} <small>EGP / 250g</small></div>
-            <p class="muted" style="margin-bottom: 1.5rem;">${item.shortDesc}</p>
-            <div class="pdp-actions">
-              <button type="button" class="btn btn--primary js-add-cart" data-id="${item.id}" style="min-width: 180px;">
-                Add to Cart
-              </button>
-            </div>
-            <div class="pdp-block">
-              <h2>Roaster's Tasting Profile</h2>
-              <ul class="benefits-list">
-                <li>100% Arabica Specialty Single Origin</li>
-                <li>Roasted fresh weekly in small artisan batches in Cairo</li>
-                <li>Airtight nitrogen-flushed pouch with degassing valve</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      `;
-    }
-
-    // F. Article Detail Page (article.html)
-    const articleDetail = document.getElementById("articleDetailContainer") || document.getElementById("articleDetail");
-    if (articleDetail) {
-      const urlParams = new URLSearchParams(window.location.search);
-      const artId = parseInt(urlParams.get("id"), 10) || 1;
-      const art = ARTICLES.find(a => a.id === artId) || ARTICLES[0];
-
-      articleDetail.innerHTML = `
-        <nav class="breadcrumb" aria-label="Breadcrumb">
-          <a href="index.html">Home</a> &gt; <a href="articles.html">Brew Guides</a> &gt; <span>${art.title}</span>
-        </nav>
-        <article class="article">
-          <span class="badge">${art.readTime}</span>
-          <h1>${art.title}</h1>
-          <div class="article-cover">
-            <img src="${art.image}" alt="${art.title}">
-          </div>
-          <div class="article-body">
-            <p>${art.excerpt}</p>
-            <p>Brewing extraordinary coffee at home requires attention to extraction variables: water temperature (92°C–96°C), mineral balance, and uniform grind particle distribution. At Roastoria, we dial in every roast profile to make home extraction effortless.</p>
-          </div>
-        </article>
-      `;
-    }
-
-    updateCartUI();
-  }
-
-  // Execute
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", renderAll);
-  } else {
-    renderAll();
-  }
-
-  // Global Click Event for Add to Cart
+  // 5. Global Cart Delegations
   document.addEventListener("click", e => {
     const btn = e.target.closest(".js-add-cart");
     if (btn) {
@@ -423,7 +342,7 @@
     }
   });
 
-  // Filter Buttons Handler
+  // Filter Buttons
   document.addEventListener("click", e => {
     const btn = e.target.closest("[data-filter]");
     if (!btn) return;
@@ -451,4 +370,15 @@
       else empty.classList.remove("is-visible");
     }
   });
+
+  // Init on DOM ready
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => {
+      initHeroSlider();
+      updateCartUI();
+    });
+  } else {
+    initHeroSlider();
+    updateCartUI();
+  }
 })();
