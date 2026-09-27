@@ -11,7 +11,6 @@
   <link rel="stylesheet" href="css/style.css">
 
   <style>
-    /* Inline Styles to guarantee perfect rendering for about.html */
     .about-hero-img {
       width: 100%;
       height: 22rem;
@@ -43,7 +42,6 @@
       color: #FFFFFF;
       border-color: var(--teal, #1F3F34);
     }
-    /* حصر حجم أيقونات الـ SVG لمنع تضخمها نهائياً */
     .social-link-badge svg,
     .footer__social svg {
       width: 1.25rem !important;
@@ -53,7 +51,6 @@
       fill: currentColor;
       display: block;
     }
-    /* تنسيق عناصر الفورم */
     .form-group {
       margin-bottom: 1rem;
     }
@@ -144,17 +141,14 @@
 
   <main id="main" class="section">
     <div class="container">
-      <!-- About Story Section -->
       <header class="page-hero">
         <span class="badge">Our Purpose & Heritage</span>
         <h1>Crafted for the Real Coffee Enthusiast.</h1>
         <p>Roastoria was established with a singular mission: to make freshly roasted specialty coffee transparent, accessible, and uncomplicated across Egypt. We roast in artisan micro-batches in Cairo and dispatch immediately so peak aromatics never fade.</p>
       </header>
 
-      <!-- About Image -->
-     <img class="about-hero-img" src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=2000&q=85" alt="Roastoria Pour Over Extraction">
+      <img class="about-hero-img" src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=2000&q=85" alt="Roastoria Pour Over Extraction">
 
-      <!-- Quality Pillars -->
       <div class="benefits" style="margin-bottom: 3.5rem;">
         <div class="benefit">
           <div class="benefit__icon">☕</div>
@@ -179,9 +173,7 @@
         </div>
       </div>
 
-      <!-- Contact & Form Section -->
       <div class="grid grid--2" style="align-items: start;">
-        <!-- Left: Roastery Details & Social -->
         <div class="info-card">
           <h2>Get in Touch</h2>
           <p class="muted" style="margin: 0.5rem 0 1.5rem;">Have questions regarding grind sizes, origin profiles, or wholesale orders? Reach our roastery team anytime.</p>
@@ -206,12 +198,11 @@
           </div>
         </div>
 
-        <!-- Right: Contact Form -->
         <div class="form-card">
           <h2>Send a Message</h2>
           <p class="muted" style="margin: 0.5rem 0 1.25rem;">We typically reply within 3 to 4 business hours.</p>
 
-          <form id="contactForm">
+          <form id="contactForm" onsubmit="event.preventDefault(); alert('Thank you! Your message has been sent.');">
             <div class="form-group">
               <label for="contactName">Your Name</label>
               <input type="text" id="contactName" placeholder="e.g. Mohamed Ali" required>
@@ -225,9 +216,6 @@
               <textarea id="contactMessage" placeholder="How can we assist your coffee journey?" required></textarea>
             </div>
             <button type="submit" class="btn btn--primary" style="width: 100%;">Send Message</button>
-            <div id="contactSuccess" style="display: none; margin-top: 1rem; color: var(--teal); font-weight: 700; text-align: center;">
-              ✓ Thank you! Your message has been received.
-            </div>
           </form>
         </div>
       </div>
@@ -258,26 +246,16 @@
         <div>
           <h3>Roastoria Coffee Roasters</h3>
           <p>Cairo's dedicated specialty micro-roastery. Committed to small-batch craft roasting, ethical farmer partnerships, and home-brewer empowerment.</p>
-          <div class="footer__social">
-            <a href="https://facebook.com" target="_blank" rel="noopener" aria-label="Facebook">
-              <svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
-            </a>
-            <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram">
-              <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
-            </a>
-          </div>
         </div>
-
         <div>
           <h3>Quick Links</h3>
           <ul>
             <li><a href="index.html">Home</a></li>
             <li><a href="products.html">All Roasts & Flights</a></li>
-            <li><a href="articles.html">Brew Guides</a></li>
+            <li><a href="articles.html">Brewing Guides</a></li>
             <li><a href="about.html">About & Contact</a></li>
           </ul>
         </div>
-
         <div>
           <h3>Roastery & Contact</h3>
           <ul>
@@ -294,7 +272,6 @@
     </div>
   </footer>
 
-  <!-- Scripts -->
   <script src="js/main.js"></script>
 </body>
 </html>

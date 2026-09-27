@@ -75,50 +75,7 @@
 
       <!-- Articles Grid -->
       <div class="grid grid--3" id="articlesGrid">
-        <!-- Guide 1 -->
-        <article class="article-card">
-          <a href="article.html?id=1" class="article-card__media">
-            <img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=800&q=75" alt="How to Grind Coffee for V60, Espresso, and French Press" loading="lazy">
-          </a>
-          <div class="article-card__body">
-            <span class="badge">4 min read</span>
-            <h3><a href="article.html?id=1">How to Grind Coffee for V60, Espresso, and French Press</a></h3>
-            <p>Grind size determines whether your coffee tastes sweet and balanced or bitter and sour. Here is how to dial in your grinder.</p>
-            <div class="card-actions">
-              <a href="article.html?id=1" class="btn btn--ghost btn--sm">Read Guide</a>
-            </div>
-          </div>
-        </article>
-
-        <!-- Guide 2 -->
-        <article class="article-card">
-          <a href="article.html?id=2" class="article-card__media">
-            <img src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=800&q=75" alt="Why Freshly Roasted Coffee Changes Everything" loading="lazy">
-          </a>
-          <div class="article-card__body">
-            <span class="badge">5 min read</span>
-            <h3><a href="article.html?id=2">Why Freshly Roasted Coffee Changes Everything</a></h3>
-            <p>Supermarket coffee sits on shelves for months losing aroma. Here is why our 48-hour roast freshness rule transforms your cup.</p>
-            <div class="card-actions">
-              <a href="article.html?id=2" class="btn btn--ghost btn--sm">Read Guide</a>
-            </div>
-          </div>
-        </article>
-
-        <!-- Guide 3 -->
-        <article class="article-card">
-          <a href="article.html?id=3" class="article-card__media">
-            <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=800&q=75" alt="Understanding Coffee Flavor Notes: It's Not Syrup" loading="lazy">
-          </a>
-          <div class="article-card__body">
-            <span class="badge">4 min read</span>
-            <h3><a href="article.html?id=3">Understanding Coffee Flavor Notes: It's Not Syrup</a></h3>
-            <p>When we say 'Bergamot and Apple', we never add flavor drops. Discover how micro-climate, soil, and altitude sculpt natural flavor.</p>
-            <div class="card-actions">
-              <a href="article.html?id=3" class="btn btn--ghost btn--sm">Read Guide</a>
-            </div>
-          </div>
-        </article>
+        <!-- سيتم تعبئة المقالات هنا ديناميكياً من الـ localStorage -->
       </div>
     </div>
   </main>
@@ -147,16 +104,7 @@
         <div>
           <h3>Roastoria Coffee</h3>
           <p>Small-batch specialty coffee roasted in Cairo. Freshness delivered to your door within 24 hours.</p>
-          <div class="footer__social">
-            <a href="https://facebook.com" target="_blank" rel="noopener" aria-label="Facebook">
-              <svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
-            </a>
-            <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram">
-              <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
-            </a>
-          </div>
         </div>
-
         <div>
           <h3>Quick Links</h3>
           <ul>
@@ -166,7 +114,6 @@
             <li><a href="about.html">About & Contact</a></li>
           </ul>
         </div>
-
         <div>
           <h3>Contact Roastery</h3>
           <ul>
@@ -178,12 +125,43 @@
       </div>
 
       <div class="footer__copy">
-        <p>© 2026 Roastoria Coffee Roasters. All rights reserved.</p>
+        <p>© 2026 Roastoria Specialty Coffee. All rights reserved.</p>
       </div>
     </div>
   </footer>
 
   <!-- Scripts -->
+  <script src="js/data.js"></script>
   <script src="js/main.js"></script>
+  <script>
+    // جلب وعرض المقالات ديناميكياً في صفحة Brew Guides
+    document.addEventListener("DOMContentLoaded", () => {
+      const grid = document.getElementById("articlesGrid");
+      if (!grid) return;
+
+      const articles = typeof getArticles === "function" ? getArticles() : [];
+      
+      if (articles.length === 0) {
+        grid.innerHTML = '<p class="muted">No guides available at the moment.</p>';
+        return;
+      }
+
+      grid.innerHTML = articles.map(a => `
+        <article class="article-card">
+          <a href="article.html?id=${a.id}" class="article-card__media">
+            <img src="${a.image || 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=800&q=75'}" alt="${a.titleEn || a.title || 'Article'}" loading="lazy">
+          </a>
+          <div class="article-card__body">
+            <span class="badge">${a.readTime || '4 min read'}</span>
+            <h3><a href="article.html?id=${a.id}">${a.titleEn || a.title || 'Guide'}</a></h3>
+            <p>${a.excerptEn || a.excerpt || ''}</p>
+            <div class="card-actions">
+              <a href="article.html?id=${a.id}" class="btn btn--ghost btn--sm">Read Guide</a>
+            </div>
+          </div>
+        </article>
+      `).join("");
+    });
+  </script>
 </body>
 </html>

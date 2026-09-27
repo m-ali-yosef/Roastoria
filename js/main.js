@@ -1,93 +1,7 @@
-/* Roastoria — Standalone Main Script (With Hero Carousel Slider) */
+/* Roastoria — Complete Main Script with Dynamic Products, Articles & Checkout */
 (function () {
   "use strict";
 
-  // 1. Data Store
-  const PRODUCTS = [
-    {
-      id: 1,
-      name: "Colombia Huila — Washed Single Origin",
-      category: "drip",
-      price: 320,
-      tag: "Drip & V60 · All Origins",
-      shortDesc: "Bright & crisp with notes of red apple, caramel sweetness, and honey finish.",
-      image: "images/products/p1.jpg"
-    },
-    {
-      id: 2,
-      name: "Brazil Cerrado — Natural Roast",
-      category: "espresso",
-      price: 290,
-      tag: "Espresso & Milk · All Origins",
-      shortDesc: "Rich body with comforting dark chocolate, roasted hazelnut, and buttery crema.",
-      image: "images/products/p2.jpg"
-    },
-    {
-      id: 3,
-      name: "Ethiopia Yirgacheffe — Floral & Bergamot",
-      category: "drip",
-      price: 350,
-      tag: "Drip & V60 · All Origins",
-      shortDesc: "Delicate floral fragrance with jasmine tea, citrus zest, and peach notes.",
-      image: "images/products/p3.jpg"
-    },
-    {
-      id: 4,
-      name: "The Discovery Trio Box — Complete Taste Flight",
-      category: "bundles",
-      price: 890,
-      tag: "Tasting Sets · Drip & V60 · Espresso & Milk",
-      shortDesc: "Explore Colombia, Brazil, and Ethiopia in one curated tasting experience.",
-      image: "images/products/p4.jpg"
-    }
-  ];
-
-  const ARTICLES = [
-    {
-      id: 1,
-      title: "How to Grind Coffee for V60, Espresso, and French Press",
-      readTime: "September 15, 2026 · 4 min read",
-      excerpt: "Grind size determines whether your coffee tastes sweet and balanced or bitter and sour. Here is how to nail it.",
-      image: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=800&q=75"
-    },
-    {
-      id: 2,
-      title: "Why Freshly Roasted Coffee Changes Everything",
-      readTime: "September 8, 2026 · 5 min read",
-      excerpt: "Supermarket coffee sits on shelves for months losing aroma. Here is why our 24-hour roast guarantee matters.",
-      image: "https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=800&q=75"
-    },
-    {
-      id: 3,
-      title: "Understanding Coffee Flavor Notes: It's Not Artificial Flavoring",
-      readTime: "August 28, 2026 · 4 min read",
-      excerpt: "When we say 'Jasmine and Peach', we didn't add syrup. Discover how altitude, soil, and processing create real flavor.",
-      image: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=800&q=75"
-    }
-  ];
-
-  const REVIEWS = [
-    {
-      id: 1,
-      author: "Omar K.",
-      location: "Zamalek, Cairo",
-      text: "The Colombia Huila blew me away on my morning V60. Clean, bright, and genuinely freshly roasted."
-    },
-    {
-      id: 2,
-      author: "Nouran E.",
-      location: "New Cairo",
-      text: "Roastoria's Brazil Cerrado makes the thickest espresso crema with silky milk notes. Super fast delivery!"
-    },
-    {
-      id: 3,
-      author: "Tarek H.",
-      location: "Maadi, Cairo",
-      text: "Packaging is airtight and beautiful. The tasting notes are actually accurate and not just marketing words."
-    }
-  ];
-
-  // 2. Safe Cart Manager
   const CART_KEY = "roastoria_cart_v1";
   let fallbackCart = [];
 
@@ -111,40 +25,93 @@
     updateCartUI();
   }
 
+  // جلب المنتجات (الأصلية + المضافة من الأدمن)
+  function getAllProducts() {
+    const defaultStaticProducts = [
+      { id: 1, name: "Colombia Huila — Washed Single Origin", category: "drip", price: 320, tag: "Drip & V60 · All Origins", short: "Bright & crisp with notes of red apple, caramel sweetness, and honey finish.", image: "images/products/p1.jpg" },
+      { id: 2, name: "Brazil Cerrado — Natural Roast", category: "espresso", price: 290, tag: "Espresso & Milk · All Origins", short: "Rich body with comforting dark chocolate, roasted hazelnut, and buttery crema.", image: "images/products/p2.jpg" },
+      { id: 3, name: "Ethiopia Yirgacheffe — Floral & Bergamot", category: "drip", price: 350, tag: "Drip & V60 · All Origins", short: "Delicate floral fragrance with jasmine tea, citrus zest, and peach notes.", image: "images/products/p3.jpg" },
+      { id: 4, name: "The Discovery Trio Box — Complete Taste Flight", category: "bundles", price: 890, tag: "Tasting Sets · Drip & V60", short: "Explore Colombia, Brazil, and Ethiopia in one curated tasting experience.", image: "images/products/p4.jpg" }
+    ];
+
+    try {
+      const saved = localStorage.getItem("roastoria_products_v3") || localStorage.getItem("roastoria_products_v1");
+      if (saved) {
+        const customProducts = JSON.parse(saved);
+        if (customProducts && customProducts.length > 0) {
+          return customProducts.map(p => ({
+            id: p.id,
+            name: p.nameEn || p.name || "Specialty Item",
+            price: p.price || 320,
+            category: p.category || "drip",
+            tag: p.tag || "Specialty Roast",
+            short: p.shortEn || p.short || p.description || "",
+            image: p.image || "images/products/p1.jpg"
+          }));
+        }
+      }
+    } catch (e) {}
+    return defaultStaticProducts;
+  }
+
+  // جلب المقالات (الأصلية + المضافة من الأدمن)
+  function getAllArticles() {
+    const defaultArticles = [
+      { id: 1, titleEn: "How to Grind Coffee for V60, Espresso, and French Press", readTime: "4 min read", excerptEn: "Grind size determines whether your coffee tastes sweet and balanced or bitter and sour.", image: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=800&q=75" },
+      { id: 2, titleEn: "Why Freshly Roasted Coffee Changes Everything", readTime: "5 min read", excerptEn: "Supermarket coffee sits on shelves for months losing aroma. Here is why freshness matters.", image: "https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=800&q=75" },
+      { id: 3, titleEn: "Understanding Coffee Flavor Notes: It's Not Artificial", readTime: "4 min read", excerptEn: "When we say 'Jasmine and Peach', discover how altitude and processing create real flavor.", image: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=800&q=75" }
+    ];
+
+    try {
+      const saved = localStorage.getItem("roastoria_articles_v2") || localStorage.getItem("roastoria_articles_v1");
+      if (saved) {
+        const customArticles = JSON.parse(saved);
+        if (customArticles && customArticles.length > 0) {
+          return customArticles.map(a => ({
+            id: a.id,
+            titleEn: a.titleEn || a.title || "Brew Guide",
+            readTime: a.readTime || "4 min read",
+            excerptEn: a.excerptEn || a.excerpt || "",
+            image: a.image || "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=800&q=75"
+          }));
+        }
+      }
+    } catch (e) {}
+    return defaultArticles;
+  }
+
   function addToCart(productId, qty) {
     qty = qty || 1;
-    const pId = parseInt(productId, 10);
-    const product = PRODUCTS.find(p => p.id === pId);
-    if (!product) return;
-
+    const products = getAllProducts();
+    const product = products.find(p => p.id == productId);
+    
     let cart = getCart();
-    const item = cart.find(i => i.id === pId);
+    const item = cart.find(i => i.id == productId);
     if (item) {
       item.qty += qty;
     } else {
       cart.push({
-        id: product.id,
-        name: product.name,
-        price: product.price,
-        image: product.image,
+        id: productId,
+        name: product ? product.name : "Specialty Coffee Item",
+        price: product ? product.price : 320,
+        image: product ? product.image : "images/products/p1.jpg",
         qty: qty
       });
     }
 
     saveCart(cart);
-    showToast(`Added "${product.name}" to cart!`);
+    showToast("Added item to cart!");
     openCartDrawer();
   }
 
   function updateItemQty(productId, delta) {
-    const pId = parseInt(productId, 10);
     let cart = getCart();
-    const item = cart.find(i => i.id === pId);
+    const item = cart.find(i => i.id == productId);
     if (!item) return;
 
     item.qty += delta;
     if (item.qty <= 0) {
-      cart = cart.filter(i => i.id !== pId);
+      cart = cart.filter(i => i.id != productId);
     }
     saveCart(cart);
   }
@@ -191,7 +158,6 @@
     }
   }
 
-  // 3. Cart Drawer & UI Controls
   const drawer = document.getElementById("cartDrawer");
   const drawerOverlay = document.getElementById("drawerOverlay");
 
@@ -222,16 +188,101 @@
     cartList.addEventListener("click", e => {
       const btn = e.target.closest(".btn-qty");
       if (!btn) return;
-      updateItemQty(parseInt(btn.dataset.id, 10), parseInt(btn.dataset.delta, 10));
+      updateItemQty(btn.dataset.id, parseInt(btn.dataset.delta, 10));
     });
   }
 
+  // عرض المنتجات ديناميكياً
+  function renderDynamicProducts() {
+    const grids = document.querySelectorAll("#featuredGrid, #allProductsGrid, .products-grid");
+    if (grids.length === 0) return;
+
+    const products = getAllProducts();
+    const htmlContent = products.map(p => `
+      <article class="product-card" data-category="${p.category}">
+        <a href="product.html?id=${p.id}" class="product-card__media">
+          <img src="${p.image}" alt="${p.name}" loading="lazy">
+        </a>
+        <div class="product-card__body">
+          <span class="badge">${p.tag}</span>
+          <h3><a href="product.html?id=${p.id}">${p.name}</a></h3>
+          <p>${p.short}</p>
+          <div class="product-card__price">
+            <span class="price">${p.price} <small>EGP</small></span>
+          </div>
+          <div class="card-actions card-actions--dual">
+            <button type="button" class="btn btn--primary btn--sm js-add-cart" data-id="${p.id}">Add to Cart</button>
+            <a href="product.html?id=${p.id}" class="btn btn--ghost btn--sm">View Roast</a>
+          </div>
+        </div>
+      </article>
+    `).join("");
+
+    grids.forEach(grid => { grid.innerHTML = htmlContent; });
+  }
+
+  // عرض المقالات والدولات ديناميكياً في صفحة Brew Guides
+  function renderDynamicArticles() {
+    const grids = document.querySelectorAll("#articlesGrid, [data-blog]");
+    if (grids.length === 0) return;
+
+    const articles = getAllArticles();
+    const htmlContent = articles.map(a => `
+      <article class="article-card">
+        <a href="article.html?id=${a.id}" class="article-card__media">
+          <img src="${a.image}" alt="${a.titleEn}" loading="lazy">
+        </a>
+        <div class="article-card__body">
+          <span class="badge">${a.readTime}</span>
+          <h3><a href="article.html?id=${a.id}">${a.titleEn}</a></h3>
+          <p>${a.excerptEn}</p>
+          <div class="card-actions">
+            <a href="article.html?id=${a.id}" class="btn btn--ghost btn--sm">Read Guide</a>
+          </div>
+        </div>
+      </article>
+    `).join("");
+
+    grids.forEach(grid => { grid.innerHTML = htmlContent; });
+  }
+
+  // Checkout Handler
   const checkoutBtn = document.getElementById("checkoutBtn");
   if (checkoutBtn) {
     checkoutBtn.addEventListener("click", () => {
-      alert("Thank you for choosing Roastoria! Your order has been placed.");
+      const cart = getCart();
+      if (cart.length === 0) return;
+
+      const name = prompt("Please enter your full name for delivery:", "Mohamed Ali");
+      if (!name) return;
+      const phone = prompt("Please enter your phone number / WhatsApp:", "+201000000000");
+      if (!phone) return;
+      const address = prompt("Please enter your delivery address:", "Cairo, Egypt");
+      if (!address) return;
+
+      const total = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
+      const newOrder = {
+        id: "ORD-" + Math.floor(100000 + Math.random() * 900000),
+        date: new Date().toLocaleString(),
+        customer: { name, phone, address },
+        items: cart,
+        total: total,
+        status: "Pending",
+        adminMessage: "Thank you for your order! We are preparing your items."
+      };
+
+      let orders = [];
+      try {
+        const savedOrders = localStorage.getItem("roastoria_orders_v1");
+        if (savedOrders) orders = JSON.parse(savedOrders);
+      } catch (e) {}
+
+      orders.unshift(newOrder);
+      localStorage.setItem("roastoria_orders_v1", JSON.stringify(orders));
+
       saveCart([]);
       closeCartDrawer();
+      alert(`Order placed successfully! Order ID: ${newOrder.id}\nYour request has been sent to the admin portal.`);
     });
   }
 
@@ -248,7 +299,6 @@
     setTimeout(() => toast.classList.remove("is-visible"), 2500);
   }
 
-  // Mobile Navigation
   const menuBtn = document.getElementById("menuToggle");
   const mobileNav = document.getElementById("mobileNav");
   const navOverlay = document.getElementById("navOverlay");
@@ -263,77 +313,6 @@
     });
   }
 
-  // 4. Hero Slider Controller
-  function initHeroSlider() {
-    const slider = document.getElementById("heroSlider");
-    if (!slider) return;
-
-    const slides = slider.querySelectorAll(".hero__slide");
-    const dots = slider.querySelectorAll(".slider-dot");
-    const prevBtn = document.getElementById("slidePrev");
-    const nextBtn = document.getElementById("slideNext");
-
-    if (slides.length <= 1) return;
-
-    let currentIndex = 0;
-    let timer = null;
-
-    function goToSlide(index) {
-      slides[currentIndex].classList.remove("is-active");
-      if (dots[currentIndex]) dots[currentIndex].classList.remove("is-active");
-
-      currentIndex = (index + slides.length) % slides.length;
-
-      slides[currentIndex].classList.add("is-active");
-      if (dots[currentIndex]) dots[currentIndex].classList.add("is-active");
-    }
-
-    function nextSlide() {
-      goToSlide(currentIndex + 1);
-    }
-
-    function prevSlide() {
-      goToSlide(currentIndex - 1);
-    }
-
-    function startAutoPlay() {
-      stopAutoPlay();
-      timer = setInterval(nextSlide, 5000);
-    }
-
-    function stopAutoPlay() {
-      if (timer) clearInterval(timer);
-    }
-
-    if (nextBtn) {
-      nextBtn.addEventListener("click", () => {
-        nextSlide();
-        startAutoPlay();
-      });
-    }
-
-    if (prevBtn) {
-      prevBtn.addEventListener("click", () => {
-        prevSlide();
-        startAutoPlay();
-      });
-    }
-
-    dots.forEach(dot => {
-      dot.addEventListener("click", () => {
-        const slideIndex = parseInt(dot.dataset.slide, 10);
-        goToSlide(slideIndex);
-        startAutoPlay();
-      });
-    });
-
-    slider.addEventListener("mouseenter", stopAutoPlay);
-    slider.addEventListener("mouseleave", startAutoPlay);
-
-    startAutoPlay();
-  }
-
-  // 5. Global Cart Delegations
   document.addEventListener("click", e => {
     const btn = e.target.closest(".js-add-cart");
     if (btn) {
@@ -342,43 +321,15 @@
     }
   });
 
-  // Filter Buttons
-  document.addEventListener("click", e => {
-    const btn = e.target.closest("[data-filter]");
-    if (!btn) return;
-
-    document.querySelectorAll("[data-filter]").forEach(b => b.classList.remove("is-active"));
-    btn.classList.add("is-active");
-
-    const filter = btn.dataset.filter;
-    const cards = document.querySelectorAll("#allProductsGrid .product-card");
-    let visibleCount = 0;
-
-    cards.forEach(card => {
-      const cat = card.dataset.category;
-      if (filter === "all" || cat === filter) {
-        card.classList.remove("is-hidden");
-        visibleCount++;
-      } else {
-        card.classList.add("is-hidden");
-      }
-    });
-
-    const empty = document.getElementById("productsEmpty");
-    if (empty) {
-      if (visibleCount === 0) empty.classList.add("is-visible");
-      else empty.classList.remove("is-visible");
-    }
-  });
-
-  // Init on DOM ready
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", () => {
-      initHeroSlider();
+      renderDynamicProducts();
+      renderDynamicArticles();
       updateCartUI();
     });
   } else {
-    initHeroSlider();
+    renderDynamicProducts();
+    renderDynamicArticles();
     updateCartUI();
   }
 })();

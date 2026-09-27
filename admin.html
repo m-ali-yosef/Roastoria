@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Portal — Roastoria</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .admin-container { max-width: 1200px; margin: 2rem auto; padding: 0 1.25rem; }
+    .admin-tabs { display: flex; gap: 0.75rem; margin-bottom: 2rem; border-bottom: 1px solid var(--line); padding-bottom: 1rem; flex-wrap: wrap; }
+    .admin-tab { padding: 0.6rem 1.25rem; border-radius: var(--radius-sm); background: #fff; border: 1px solid var(--line); font-weight: 700; cursor: pointer; transition: all 0.2s; }
+    .admin-tab.is-active { background: var(--teal); color: #fff; border-color: var(--teal); }
+    .admin-section { display: none; }
+    .admin-section.is-active { display: block; }
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.25rem; margin-bottom: 2rem; }
+    .stat-card { background: #fff; padding: 1.5rem; border-radius: var(--radius); border: 1px solid var(--line); box-shadow: var(--shadow-sm); }
+    .stat-card h3 { font-size: 0.9rem; color: var(--ink-soft); margin-bottom: 0.5rem; }
+    .stat-card .number { font-size: 1.8rem; font-weight: 800; color: var(--teal); font-family: var(--font-heading); }
+    .admin-table { width: 100%; border-collapse: collapse; background: #fff; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); margin-bottom: 2rem; }
+    .admin-table th, .admin-table td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--line); font-size: 0.9rem; }
+    .admin-table th { background: var(--bg-alt); font-weight: 700; }
+    .badge-status { display: inline-block; padding: 0.25rem 0.65rem; border-radius: 999px; font-size: 0.75rem; font-weight: 700; }
+    .status-pending { background: #FEF3C7; color: #92400E; }
+    .status-shipped { background: #DBEAFE; color: #1E40AF; }
+    .status-delivered { background: #D1FAE5; color: #065F46; }
+    
+    .modal-overlay { position: fixed; inset: 0; background: rgba(22, 26, 24, 0.5); display: none; align-items: center; justify-content: center; z-index: 100; }
+    .modal-overlay.is-open { display: flex; }
+    .modal-content { background: #fff; padding: 2rem; border-radius: var(--radius); width: min(90vw, 550px); max-height: 90vh; overflow-y: auto; box-shadow: var(--shadow); }
+    .modal-group { margin-bottom: 1rem; }
+    .modal-group label { display: block; font-weight: 700; font-size: 0.85rem; margin-bottom: 0.3rem; }
+    .modal-group input, .modal-group textarea, .modal-group select { width: 100%; padding: 0.6rem; border: 1px solid var(--line); border-radius: var(--radius-sm); font: inherit; }
+    .modal-actions { display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 1.5rem; }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="header__inner">
+      <a href="index.html" class="logo">
+        <div class="logo__mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path></svg></div>
+        <div>Roastoria <span>Admin Portal</span></div>
+      </a>
+      <nav class="nav"><a href="index.html">View Storefront</a></nav>
+    </div>
+  </header>
+
+  <main class="admin-container">
+    <div class="page-hero" style="margin-bottom: 1.5rem;">
+      <h1>Store & Content Management</h1>
+      <p>Configure bilingual products, manage articles/blogs, and track customer orders.</p>
+    </div>
+
+    <div class="admin-tabs">
+      <button class="admin-tab is-active" data-tab="insights">📊 Sales Insights</button>
+      <button class="admin-tab" data-tab="orders">📦 Orders Waiting List (<span id="ordersCountBadge">0</span>)</button>
+      <button class="admin-tab" data-tab="products">☕ Products Configuration</button>
+      <button class="admin-tab" data-tab="articles">✍️ Articles & Blogs</button>
+    </div>
+
+    <div class="admin-section is-active" id="section-insights">
+      <div class="stats-grid">
+        <div class="stat-card"><h3>Total Revenue</h3><div class="number" id="statRevenue">0 EGP</div></div>
+        <div class="stat-card"><h3>Total Orders</h3><div class="number" id="statOrders">0</div></div>
+        <div class="stat-card"><h3>Active Products</h3><div class="number" id="statProducts">0</div></div>
+      </div>
+    </div>
+
+    <div class="admin-section" id="section-orders">
+      <h2>Customer Orders & Waiting List</h2>
+      <table class="admin-table">
+        <thead>
+          <tr><th>Order ID</th><th>Customer</th><th>Items & Total</th><th>Date</th><th>Status</th><th>Actions</th></tr>
+        </thead>
+        <tbody id="ordersTableBody"></tbody>
+      </table>
+    </div>
+
+    <div class="admin-section" id="section-products">
+      <div class="section__head" style="display:flex; justify-content:space-between; margin-bottom:1rem;">
+        <h2>Bilingual Coffee Roasts</h2>
+        <button class="btn btn--primary btn--sm" id="openAddProdModal">+ Add Roast</button>
+      </div>
+      <table class="admin-table">
+        <thead>
+          <tr><th>Image</th><th>Name (EN / AR)</th><th>Category</th><th>Price</th><th>Actions</th></tr>
+        </thead>
+        <tbody id="productsTableBody"></tbody>
+      </table>
+    </div>
+
+    <div class="admin-section" id="section-articles">
+      <div class="section__head" style="display:flex; justify-content:space-between; margin-bottom:1rem;">
+        <h2>Bilingual Brew Guides & Blogs</h2>
+        <button class="btn btn--primary btn--sm" id="openAddArtModal">+ Add Article</button>
+      </div>
+      <table class="admin-table">
+        <thead>
+          <tr><th>Image</th><th>Title (EN / AR)</th><th>Read Time</th><th>Actions</th></tr>
+        </thead>
+        <tbody id="articlesTableBody"></tbody>
+      </table>
+    </div>
+  </main>
+
+  <!-- Product Modal -->
+  <div class="modal-overlay" id="productModal">
+    <div class="modal-content">
+      <h3 id="prodModalTitle">Add Roast</h3>
+      <form id="productForm">
+        <input type="hidden" id="editProdId">
+        <input type="hidden" id="prodExistingImg" value="images/products/p1.jpg">
+        <div class="modal-group"><label>Name (English)</label><input type="text" id="prodNameEn" required></div>
+        <div class="modal-group"><label>Name (Arabic / الاسم بالعربي)</label><input type="text" id="prodNameAr" required></div>
+        <div class="modal-group"><label>Price (EGP)</label><input type="number" id="prodPrice" required></div>
+        <div class="modal-group">
+          <label>Category</label>
+          <select id="prodCategory">
+            <option value="filter">Drip & V60 (تقطير)</option>
+            <option value="espresso">Espresso & Milk (إسبريسو وميلك)</option>
+            <option value="sets">Tasting Sets (مجموعات التذوق)</option>
+          </select>
+        </div>
+        <div class="modal-group"><label>Short Description (English)</label><textarea id="prodShortEn" rows="2"></textarea></div>
+        <div class="modal-group"><label>Short Description (Arabic / الوصف بالعربي)</label><textarea id="prodShortAr" rows="2"></textarea></div>
+        <div class="modal-group"><label>Upload Image</label><input type="file" id="prodImgFile" accept="image/*"></div>
+        <div class="modal-actions"><button type="button" class="btn btn--ghost btn--sm" id="closeProdModal">Cancel</button><button type="submit" class="btn btn--primary btn--sm">Save</button></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Article Modal -->
+  <div class="modal-overlay" id="articleModal">
+    <div class="modal-content">
+      <h3 id="artModalTitle">Add Article / Blog</h3>
+      <form id="articleForm">
+        <input type="hidden" id="editArtId">
+        <input type="hidden" id="artExistingImg" value="">
+        <div class="modal-group"><label>Title (English)</label><input type="text" id="artTitleEn" required></div>
+        <div class="modal-group"><label>Title (Arabic / العنوان بالعربي)</label><input type="text" id="artTitleAr" required></div>
+        <div class="modal-group"><label>Read Time</label><input type="text" id="artReadTime" value="4 min read"></div>
+        <div class="modal-group"><label>Excerpt (English)</label><textarea id="artExcerptEn" rows="2"></textarea></div>
+        <div class="modal-group"><label>Excerpt (Arabic / المقتطف بالعربي)</label><textarea id="artExcerptAr" rows="2"></textarea></div>
+        <div class="modal-group"><label>Upload Image</label><input type="file" id="artImgFile" accept="image/*"></div>
+        <div class="modal-actions"><button type="button" class="btn btn--ghost btn--sm" id="closeArtModal">Cancel</button><button type="submit" class="btn btn--primary btn--sm">Save</button></div>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      document.querySelectorAll(".admin-tab").forEach(tab => {
+        tab.addEventListener("click", () => {
+          document.querySelectorAll(".admin-tab").forEach(t => t.classList.remove("is-active"));
+          document.querySelectorAll(".admin-section").forEach(s => s.classList.remove("is-active"));
+          tab.classList.add("is-active");
+          document.getElementById(`section-${tab.dataset.tab}`).classList.add("is-active");
+        });
+      });
+      loadAdminDashboard();
+    });
+
+    function loadAdminDashboard() {
+      const products = getProducts();
+      const articles = getArticles();
+      const orders = getOrders();
+
+      document.getElementById("statRevenue").textContent = orders.reduce((s, o) => s + o.total, 0) + " EGP";
+      document.getElementById("statOrders").textContent = orders.length;
+      document.getElementById("statProducts").textContent = products.length;
+      document.getElementById("ordersCountBadge").textContent = orders.length;
+
+      document.getElementById("ordersTableBody").innerHTML = orders.length === 0 ? `<tr><td colspan="6" style="text-align:center;">No orders yet.</td></tr>` : orders.map(o => `
+        <tr>
+          <td><strong>${o.id}</strong></td>
+          <td>${o.customer.name}<br><small class="muted">${o.customer.phone}</small></td>
+          <td>${o.items.map(i => `${i.name} (x${i.qty})`).join("<br>")}<br><strong>${o.total} EGP</strong></td>
+          <td><small>${o.date}</small></td>
+          <td><span class="badge-status status-${o.status.toLowerCase()}">${o.status}</span></td>
+          <td>
+            <select onchange="updateOrderStatus('${o.id}', this.value)" style="padding:0.2rem;">
+              <option value="Pending" ${o.status==='Pending'?'selected':''}>Pending</option>
+              <option value="Shipped" ${o.status==='Shipped'?'selected':''}>Shipped</option>
+              <option value="Delivered" ${o.status==='Delivered'?'selected':''}>Delivered</option>
+            </select>
+          </td>
+        </tr>
+      `).join("");
+
+      document.getElementById("productsTableBody").innerHTML = products.map(p => `
+        <tr>
+          <td><img src="${p.image}" style="width:2.5rem; height:2.5rem; object-fit:contain;"></td>
+          <td><strong>${p.nameEn}</strong><br><span dir="rtl">${p.nameAr || ''}</span></td>
+          <td>${p.category}</td>
+          <td><strong>${p.price} EGP</strong></td>
+          <td>
+            <button class="btn btn--ghost btn--sm" onclick="openEditProd(${p.id})">Edit</button>
+            <button class="btn btn--ghost btn--sm" onclick="deleteProd(${p.id})" style="color:red;">Delete</button>
+          </td>
+        </tr>
+      `).join("");
+
+      document.getElementById("articlesTableBody").innerHTML = articles.map(a => `
+        <tr>
+          <td><img src="${a.image}" style="width:2.5rem; height:2.5rem; object-fit:cover; border-radius:4px;"></td>
+          <td><strong>${a.titleEn}</strong><br><span dir="rtl">${a.titleAr || ''}</span></td>
+          <td>${a.readTime}</td>
+          <td>
+            <button class="btn btn--ghost btn--sm" onclick="openEditArt(${a.id})">Edit</button>
+            <button class="btn btn--ghost btn--sm" onclick="deleteArt(${a.id})" style="color:red;">Delete</button>
+          </td>
+        </tr>
+      `).join("");
+    }
+
+    const prodModal = document.getElementById("productModal");
+    document.getElementById("openAddProdModal").onclick = () => {
+      document.getElementById("prodModalTitle").textContent = "Add Roast";
+      document.getElementById("editProdId").value = "";
+      document.getElementById("productForm").reset();
+      prodModal.classList.add("is-open");
+    };
+    document.getElementById("closeProdModal").onclick = () => prodModal.classList.remove("is-open");
+
+    function openEditProd(id) {
+      const p = getProducts().find(x => x.id === id);
+      if (!p) return;
+      document.getElementById("prodModalTitle").textContent = "Edit Roast";
+      document.getElementById("editProdId").value = p.id;
+      document.getElementById("prodNameEn").value = p.nameEn || "";
+      document.getElementById("prodNameAr").value = p.nameAr || "";
+      document.getElementById("prodPrice").value = p.price || 0;
+      document.getElementById("prodCategory").value = p.category || "filter";
+      document.getElementById("prodShortEn").value = p.shortEn || "";
+      document.getElementById("prodShortAr").value = p.shortAr || "";
+      document.getElementById("prodExistingImg").value = p.image || "";
+      prodModal.classList.add("is-open");
+    }
+
+    document.getElementById("productForm").onsubmit = (e) => {
+      e.preventDefault();
+      const id = document.getElementById("editProdId").value;
+      const data = {
+        id: id ? parseInt(id) : Date.now(),
+        nameEn: document.getElementById("prodNameEn").value,
+        nameAr: document.getElementById("prodNameAr").value,
+        price: parseFloat(document.getElementById("prodPrice").value),
+        category: document.getElementById("prodCategory").value,
+        shortEn: document.getElementById("prodShortEn").value,
+        shortAr: document.getElementById("prodShortAr").value,
+        image: document.getElementById("prodExistingImg").value
+      };
+
+      const file = document.getElementById("prodImgFile").files[0];
+      const save = (img) => {
+        data.image = img;
+        let products = getProducts();
+        if (id) {
+          products = products.map(x => x.id == id ? data : x);
+        } else {
+          products.push(data);
+        }
+        saveProducts(products);
+        prodModal.classList.remove("is-open");
+        loadAdminDashboard();
+      };
+
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (evt) => save(evt.target.result);
+        reader.readAsDataURL(file);
+      } else {
+        save(data.image);
+      }
+    };
+
+    function deleteProd(id) {
+      if (confirm("Delete item?")) {
+        saveProducts(getProducts().filter(x => x.id !== id));
+        loadAdminDashboard();
+      }
+    }
+
+    const artModal = document.getElementById("articleModal");
+    document.getElementById("openAddArtModal").onclick = () => {
+      document.getElementById("artModalTitle").textContent = "Add Article / Blog";
+      document.getElementById("editArtId").value = "";
+      document.getElementById("articleForm").reset();
+      artModal.classList.add("is-open");
+    };
+    document.getElementById("closeArtModal").onclick = () => artModal.classList.remove("is-open");
+
+    function openEditArt(id) {
+      const a = getArticles().find(x => x.id === id);
+      if (!a) return;
+      document.getElementById("artModalTitle").textContent = "Edit Article";
+      document.getElementById("editArtId").value = a.id;
+      document.getElementById("artTitleEn").value = a.titleEn || "";
+      document.getElementById("artTitleAr").value = a.titleAr || "";
+      document.getElementById("artReadTime").value = a.readTime || "4 min read";
+      document.getElementById("artExcerptEn").value = a.excerptEn || "";
+      document.getElementById("artExcerptAr").value = a.excerptAr || "";
+      document.getElementById("artExistingImg").value = a.image || "";
+      artModal.classList.add("is-open");
+    }
+
+    document.getElementById("articleForm").onsubmit = (e) => {
+      e.preventDefault();
+      const id = document.getElementById("editArtId").value;
+      const data = {
+        id: id ? parseInt(id) : Date.now(),
+        titleEn: document.getElementById("artTitleEn").value,
+        titleAr: document.getElementById("artTitleAr").value,
+        readTime: document.getElementById("artReadTime").value,
+        excerptEn: document.getElementById("artExcerptEn").value,
+        excerptAr: document.getElementById("artExcerptAr").value,
+        image: document.getElementById("artExistingImg").value
+      };
+
+      const file = document.getElementById("artImgFile").files[0];
+      const save = (img) => {
+        data.image = img;
+        let articles = getArticles();
+        if (id) {
+          articles = articles.map(x => x.id == id ? data : x);
+        } else {
+          articles.push(data);
+        }
+        saveArticles(articles);
+        artModal.classList.remove("is-open");
+        loadAdminDashboard();
+      };
+
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (evt) => save(evt.target.result);
+        reader.readAsDataURL(file);
+      } else {
+        save(data.image || "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=800&q=75");
+      }
+    };
+
+    function deleteArt(id) {
+      if (confirm("Delete article?")) {
+        saveArticles(getArticles().filter(x => x.id !== id));
+        loadAdminDashboard();
+      }
+    }
+
+    function updateOrderStatus(id, status) {
+      let orders = getOrders();
+      orders = orders.map(o => o.id === id ? { ...o, status } : o);
+      saveOrders(orders);
+      loadAdminDashboard();
+    }
+  </script>
+</body>
+</html>
