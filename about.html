@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>About & Contact — Roastoria Specialty Coffee</title>
-  <meta name="description" content="Learn about Roastoria artisan micro-roastery in Cairo, our direct farm trade mission, and get in touch with our team.">
+  <title>About & Contact — Roastoria Turkish Coffee</title>
+  <meta name="description" content="Learn about Roastoria artisan Turkish coffee roastery in Cairo, our rich blends, and chat live with our coffee assistant.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
@@ -51,35 +51,83 @@
       fill: currentColor;
       display: block;
     }
-    .form-group {
-      margin-bottom: 1rem;
-    }
-    .form-group label {
-      display: block;
-      font-weight: 700;
-      font-size: 0.88rem;
-      margin-bottom: 0.35rem;
-      color: var(--ink, #161A18);
-    }
-    .form-group input,
-    .form-group textarea {
-      width: 100%;
-      padding: 0.75rem 1rem;
-      border-radius: var(--radius-sm, 0.4rem);
-      border: 1px solid var(--line, #D8E2DC);
+
+    /* تصميم شات بوت فخم ومتناسق مع الموقع */
+    .chatbot-card {
       background: #FFFFFF;
-      font-size: 0.95rem;
-      color: var(--ink, #161A18);
+      border: 1px solid var(--line, #D8E2DC);
+      border-radius: var(--radius, 0.8rem);
+      padding: 1.75rem;
+      box-shadow: 0 12px 30px rgba(31, 63, 52, 0.08);
+      display: flex;
+      flex-direction: column;
+    }
+    .chatbot-card h2 {
+      font-size: 1.5rem;
+      color: var(--teal, #1F3F34);
+      margin-bottom: 0.25rem;
+    }
+    .chat-box {
+      width: 100%;
+      height: 380px;
+      border: 1px solid #D8E2DC;
+      border-radius: 0.6rem;
+      background: #FAFCFA;
+      margin-top: 1rem;
+      padding: 1rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .chat-message {
+      max-width: 80%;
+      padding: 0.75rem 1rem;
+      border-radius: 0.5rem;
+      font-size: 0.92rem;
+      line-height: 1.4;
+      white-space: pre-wrap;
+    }
+    .chat-message.bot {
+      background: #E8F0EC;
+      color: #1F3F34;
+      align-self: flex-start;
+      border-bottom-left-radius: 0.1rem;
+    }
+    .chat-message.user {
+      background: #1F3F34;
+      color: #FFFFFF;
+      align-self: flex-end;
+      border-bottom-right-radius: 0.1rem;
+    }
+    .chat-input-area {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+    .chat-input-area input {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      border: 1px solid #D8E2DC;
+      border-radius: 0.4rem;
       outline: none;
-      transition: border-color 0.2s;
+      font-size: 0.95rem;
     }
-    .form-group input:focus,
-    .form-group textarea:focus {
-      border-color: var(--teal, #1F3F34);
+    .chat-input-area input:focus {
+      border-color: #1F3F34;
     }
-    .form-group textarea {
-      resize: vertical;
-      min-height: 7rem;
+    .chat-input-area button {
+      padding: 0 1.25rem;
+      background: #1F3F34;
+      color: #FFFFFF;
+      border: none;
+      border-radius: 0.4rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .chat-input-area button:hover {
+      background: #162d25;
     }
   </style>
 </head>
@@ -99,7 +147,7 @@
             <line x1="14" y1="1" x2="14" y2="4"></line>
           </svg>
         </div>
-        <div>Roastoria <span>Artisan Roasters</span></div>
+        <div>Roastoria <span>Turkish Roasters</span></div>
       </a>
 
       <nav class="nav" aria-label="Main Navigation">
@@ -141,48 +189,53 @@
 
   <main id="main" class="section">
     <div class="container">
+      <!-- About Story Section -->
       <header class="page-hero">
-        <span class="badge">Our Purpose & Heritage</span>
-        <h1>Crafted for the Real Coffee Enthusiast.</h1>
-        <p>Roastoria was established with a singular mission: to make freshly roasted specialty coffee transparent, accessible, and uncomplicated across Egypt. We roast in artisan micro-batches in Cairo and dispatch immediately so peak aromatics never fade.</p>
+        <span class="badge">Our Heritage & Turkish Art</span>
+        <h1>The Authentic Taste of Turkish Coffee.</h1>
+        <p>Roastoria was established to revive the genuine heritage of Turkish coffee crafting. We combine premium bean selection with traditional grinding techniques to deliver an authentic, rich experience straight to your cup in Cairo.</p>
       </header>
 
-      <img class="about-hero-img" src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=2000&q=85" alt="Roastoria Pour Over Extraction">
+      <!-- About Image -->
+      <img class="about-hero-img" src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=2000&q=85" alt="Turkish Coffee Brewing">
 
+      <!-- Quality Pillars -->
       <div class="benefits" style="margin-bottom: 3.5rem;">
         <div class="benefit">
           <div class="benefit__icon">☕</div>
           <div>
-            <h3>100% Arabica 84+ SCA</h3>
-            <p>Every coffee lot is scored for clarity, natural sweetness, and clean cup acidity before sourcing.</p>
+            <h3>Authentic Turkish Grind</h3>
+            <p>Ground to a fine, powder-like texture essential for creating the signature thick foam (وش القهوة).</p>
           </div>
         </div>
         <div class="benefit">
-          <div class="benefit__icon">⏳</div>
+          <div class="benefit__icon">🌿</div>
           <div>
-            <h3>48h Roast-to-Ship</h3>
-            <p>We believe supermarket coffee is dead coffee. You always receive beans roasted at their peak flavor window.</p>
+            <h3>Pure Cardamom & Spices</h3>
+            <p>Blended with premium organic cardamom and fine spices to elevate your daily coffee ritual.</p>
           </div>
         </div>
         <div class="benefit">
           <div class="benefit__icon">🤝</div>
           <div>
-            <h3>Ethical Direct Trade</h3>
-            <p>Direct farm partnerships in Colombia, Brazil, and Ethiopia that pay farmers sustainable specialty premiums.</p>
+            <h3>Crafted Fresh Daily</h3>
+            <p>Roasted and packaged in micro-batches in Cairo to lock in deep aromas and traditional flavors.</p>
           </div>
         </div>
       </div>
 
+      <!-- Contact & Chatbot Section -->
       <div class="grid grid--2" style="align-items: start;">
+        <!-- Left: Roastery Details & Social -->
         <div class="info-card">
           <h2>Get in Touch</h2>
-          <p class="muted" style="margin: 0.5rem 0 1.5rem;">Have questions regarding grind sizes, origin profiles, or wholesale orders? Reach our roastery team anytime.</p>
+          <p class="muted" style="margin: 0.5rem 0 1.5rem;">Have questions regarding our Turkish coffee blends, prices, or wholesale? Reach our team anytime.</p>
           
           <ul class="benefits-list" style="margin-bottom: 2rem;">
             <li><strong>Email:</strong> hello@roastoria-coffee.com</li>
             <li><strong>Phone / WhatsApp:</strong> +20254878787</li>
             <li><strong>Roastery Location:</strong> Cairo, Egypt</li>
-            <li><strong>Dispatch Hours:</strong> Saturday – Thursday: 9:00 AM – 7:00 PM</li>
+            <li><strong>Support Hours:</strong> Saturday – Thursday: 9:00 AM – 7:00 PM</li>
           </ul>
 
           <h3>Follow the Roastery</h3>
@@ -198,25 +251,19 @@
           </div>
         </div>
 
-        <div class="form-card">
-          <h2>Send a Message</h2>
-          <p class="muted" style="margin: 0.5rem 0 1.25rem;">We typically reply within 3 to 4 business hours.</p>
+        <!-- Right: Modern Custom Chatbot UI -->
+        <div class="chatbot-card">
+          <h2>Chat with Our Coffee Expert</h2>
+          <p class="muted" style="margin: 0.5rem 0 0rem;">Ask about our Turkish coffee blends, prices, or coffee tips!</p>
+          
+          <div class="chat-box" id="chatBox">
+            <div class="chat-message bot">مرحباً بك في Roastoria! أنا مساعد القهوة التركية، كيف يمكنني مساعدتك اليوم في اختيار الصنف المناسب أو معرفة الأسعار والعروض؟ ☕</div>
+          </div>
 
-          <form id="contactForm" onsubmit="event.preventDefault(); alert('Thank you! Your message has been sent.');">
-            <div class="form-group">
-              <label for="contactName">Your Name</label>
-              <input type="text" id="contactName" placeholder="e.g. Mohamed Ali" required>
-            </div>
-            <div class="form-group">
-              <label for="contactEmail">Email Address</label>
-              <input type="email" id="contactEmail" placeholder="name@example.com" required>
-            </div>
-            <div class="form-group">
-              <label for="contactMessage">Message</label>
-              <textarea id="contactMessage" placeholder="How can we assist your coffee journey?" required></textarea>
-            </div>
-            <button type="submit" class="btn btn--primary" style="width: 100%;">Send Message</button>
-          </form>
+          <div class="chat-input-area">
+            <input type="text" id="chatInput" placeholder="ارسل استفسارك...">
+            <button type="button" id="sendBtn">إرسال</button>
+          </div>
         </div>
       </div>
     </div>
@@ -244,18 +291,28 @@
     <div class="container">
       <div class="footer__grid">
         <div>
-          <h3>Roastoria Coffee Roasters</h3>
-          <p>Cairo's dedicated specialty micro-roastery. Committed to small-batch craft roasting, ethical farmer partnerships, and home-brewer empowerment.</p>
+          <h3>Roastoria Turkish Roasters</h3>
+          <p>Cairo's dedicated Turkish coffee micro-roastery. Committed to authentic traditions, rich foam, and traditional blending.</p>
+          <div class="footer__social">
+            <a href="https://facebook.com" target="_blank" rel="noopener" aria-label="Facebook">
+              <svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+            </a>
+            <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram">
+              <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+            </a>
+          </div>
         </div>
+
         <div>
           <h3>Quick Links</h3>
           <ul>
             <li><a href="index.html">Home</a></li>
-            <li><a href="products.html">All Roasts & Flights</a></li>
-            <li><a href="articles.html">Brewing Guides</a></li>
+            <li><a href="products.html">All Turkish Blends</a></li>
+            <li><a href="articles.html">Brew Guides</a></li>
             <li><a href="about.html">About & Contact</a></li>
           </ul>
         </div>
+
         <div>
           <h3>Roastery & Contact</h3>
           <ul>
@@ -267,11 +324,78 @@
       </div>
 
       <div class="footer__copy">
-        <p>© 2026 Roastoria Specialty Coffee. All rights reserved.</p>
+        <p>© 2026 Roastoria Turkish Coffee. All rights reserved.</p>
       </div>
     </div>
   </footer>
 
+  <!-- Scripts -->
   <script src="js/main.js"></script>
+  <script>
+    // تعريف الدوال في النطاق العام لضمان عمل الزر بكل دقة
+    function appendMessage(text, sender) {
+      const chatBox = document.getElementById('chatBox');
+      const msgDiv = document.createElement('div');
+      const msgId = 'msg-' + Date.now() + '-' + Math.random().toString(36.substring(2, 5));
+      msgDiv.id = msgId;
+      msgDiv.className = `chat-message ${sender}`;
+      msgDiv.textContent = text;
+      chatBox.appendChild(msgDiv);
+      chatBox.scrollTop = chatBox.scrollHeight;
+      return msgId;
+    }
+
+    async function handleSendMessage() {
+      const chatInput = document.getElementById('chatInput');
+      const chatBox = document.getElementById('chatBox');
+      const text = chatInput.value.trim();
+      if (!text) return;
+
+      appendMessage(text, 'user');
+      chatInput.value = '';
+      
+      const loadingId = appendMessage('جارٍ التفكير...', 'bot');
+
+      const webhookUrl = 'https://n8n.3wda.cloud/webhook/05420b03-a672-46ca-bf2c-fff43a71ba7e';
+
+      try {
+        const response = await fetch(webhookUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: text, chatInput: text })
+        });
+
+        const data = await response.json();
+        
+        const loadingElement = document.getElementById(loadingId);
+        if (loadingElement) loadingElement.remove();
+
+        const botReply = data.output || data.message || data.text || data.response || (Array.isArray(data) ? data[0].output : null) || 'أهلاً بك، تم استلام استفسارك بنجاح!';
+        appendMessage(botReply, 'bot');
+      } catch (error) {
+        const loadingElement = document.getElementById(loadingId);
+        if (loadingElement) loadingElement.remove();
+        appendMessage('عذراً، حدث خطأ في الاتصال بالخادم. تأكد من تفعيل الـ Webhook في n8n.', 'bot');
+      }
+    }
+
+    // تفعيل الأحداث بعد تحميل الصفحة بالكامل
+    document.addEventListener('DOMContentLoaded', () => {
+      const sendBtn = document.getElementById('sendBtn');
+      const chatInput = document.getElementById('chatInput');
+
+      if (sendBtn) {
+        sendBtn.addEventListener('click', handleSendMessage);
+      }
+      if (chatInput) {
+        chatInput.addEventListener('keypress', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            handleSendMessage();
+          }
+        });
+      }
+    });
+  </script>
 </body>
 </html>
